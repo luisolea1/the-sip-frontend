@@ -1,0 +1,246 @@
+# THE SIP — Frontend
+
+Aplicación web para el punto de venta, la administración de cafeterías y el portal de miembros de THE SIP.
+
+**Repositorio:** `the-sip-frontend`  
+**Estado:** definición previa a la implementación. Todavía no hay una aplicación ejecutable, dependencias instaladas ni servicios configurados.  
+**Alcance del piloto:** una sucursal, un iPad y operación exclusivamente con internet.  
+**Objetivo de costo:** utilizar herramientas sin costo de licencia y mantener los servicios dentro de sus planes gratuitos.
+
+## 1. Alcance
+
+- Un solo negocio, preparado para incorporar varias sucursales.
+- Operación de caja desde el navegador del iPad, incluido Chrome.
+- Lectura de tarjetas de miembros mediante QR y cámara.
+- Pagos en efectivo, con terminal bancaria independiente y mixtos.
+- Apertura, movimientos, devoluciones y cierre de caja.
+- Administración de menú, insumos, avisos y cajeros.
+- Portal público de registro y tarjeta de fidelidad.
+- Volumen inicial estimado: de 100 a 200 ventas diarias. Se evaluará también un escenario de 500 ventas diarias.
+
+**El piloto no registra ventas sin conexión.** El servidor es la fuente oficial de tickets, pagos, movimientos de caja y fidelidad. Si el servidor no confirma que guardó el ticket, el cajero no debe iniciar el cobro. Si la conexión se pierde después de cobrar, se recuperará el ticket al volver a conectarse.
+
+## 2. Áreas y accesos
+
+| Área | Ruta | Acceso |
+| --- | --- | --- |
+| Registro de miembros | `/registro-miembros` | Público |
+| Tarjeta del miembro | `/mi-tarjeta` | Miembro autenticado |
+| Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o dueño autorizado |
+| Administración | `/dueno` | Dueño |
+
+Se implementará una sola aplicación con un despliegue compartido. Cada área tendrá sus propias pantallas y responsabilidades. Los componentes visuales y el cliente de la API serán compartidos.
+
+La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
+
+### Prototipos de referencia
+
+- [Punto de venta](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/#sale?cafe=centro)
+- [Registro de miembros](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/registro-miembros)
+- [Administración del dueño](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/dueno#summary?cafe=centro)
+
+Los prototipos son la referencia visual y de navegación. Para las reglas de operación prevalece este README. Los datos, correos, cobros y tarjetas de ejemplo no representan integraciones reales.
+
+## 3. Punto de venta y caja
+
+### Recorrido de una venta
+
+1. El cajero abre su turno en la sucursal asignada.
+2. Selecciona productos, variantes, cantidades y opciones para llevar. Puede asociar una tarjeta de miembro mediante QR.
+3. Revisa el carrito, el total y el medio de pago.
+4. Al pulsar **Iniciar cobro**, la API guarda un ticket pendiente con identificador único, productos, precios aplicados, total, sucursal, cajero y turno.
+5. El cajero espera la confirmación del servidor antes de recibir el efectivo o usar la terminal.
+6. Registra el pago según el medio utilizado. La venta aparece como pagada únicamente cuando el servidor la confirma.
+
+Un **ticket pendiente** ya existe en el servidor, pero no cuenta como venta pagada ni genera sellos de fidelidad. Repetir una solicitud por un doble toque o por pérdida de conexión no debe crear otra venta.
+
+### Medios de pago
+
+| Medio | Operación |
+| --- | --- |
+| Efectivo | El cajero registra el importe recibido. La aplicación calcula el cambio y registra el efectivo correspondiente a la venta. |
+| Tarjeta | El cajero cobra en la terminal independiente, comprueba que el pago fue aprobado, verifica el importe y digita el número del voucher. |
+| Mixto | Se registran por separado la parte en efectivo y la parte en tarjeta. El voucher corresponde únicamente al importe cobrado en la terminal. |
+
+La aplicación no procesa datos bancarios ni consulta automáticamente la terminal. La suma aplicada de los medios de pago debe coincidir con el total del ticket.
+
+### Cobro aprobado e interrupción del iPad
+
+Si la terminal aprobó un pago y el iPad falla antes de mostrar la confirmación:
+
+1. Recuperar la conexión y consultar el estado del ticket.
+2. Si ya consta como pagado, mostrar la confirmación existente. **No volver a cobrar.**
+3. Si sigue pendiente, abrirlo desde **Cobros pendientes**, comprobar el importe con el voucher y digitar su número.
+4. Si el voucher ya está asociado a otra venta, bloquear el registro e indicar que debe revisarse.
+
+El servidor impedirá aplicar el mismo voucher a dos ventas, incluso si se envían dos solicitudes al mismo tiempo. Antes del piloto se verificará en la terminal real qué número identifica la transacción y si su unicidad depende de la terminal o del lote. Se conservarán los ceros iniciales del identificador.
+
+### Devoluciones y salidas
+
+Las devoluciones se registran desde **Caja → Salidas → Devolución a cliente**. La venta original se conserva.
+
+Cada devolución debe quedar vinculada a la venta e incluir el importe, el motivo obligatorio, el medio de pago original, el medio de devolución, el cajero, la sucursal, el turno y la fecha. La suma de las devoluciones no podrá superar el importe pagado.
+
+**Ejemplo:** una venta de $150 aprobada en terminal que se devuelve en efectivo conserva el cobro de $150 por tarjeta y genera una salida de $150 del cajón. El cierre muestra ambos movimientos. Un cargo rechazado o sin aprobación comprobada no justifica entregar efectivo. Antes de operar se validará con el proveedor de la terminal el procedimiento de devolución en efectivo.
+
+### Cierre de caja
+
+El cierre distinguirá fondo inicial, ventas en efectivo, entradas, salidas, devoluciones en efectivo, efectivo esperado, efectivo contado, diferencia y total cobrado por terminal.
+
+**Efectivo esperado = fondo inicial + efectivo de ventas + otras entradas − salidas.**
+
+Las devoluciones en efectivo se incluyen una sola vez dentro de las salidas. En un pago mixto solo la parte en efectivo incrementa el cajón. El total registrado por tarjeta se compara por separado con el reporte de la terminal.
+
+## 4. Registro y tarjeta de miembros
+
+El formulario solicitará nombre y correo electrónico. Para conocer al público y ofrecer promociones de cumpleaños se usarán dos campos independientes y opcionales:
+
+| Campo | Opciones o formato |
+| --- | --- |
+| Rango de edad | **24 años o menos**, **25 a 44 años**, **45 años o más**, **Prefiero no responder** |
+| Cumpleaños | Día y mes, sin solicitar el año |
+
+El rango de edad no tendrá una opción preseleccionada. El miembro podrá obtener su tarjeta aunque omita ambos campos. El consentimiento para promociones será opcional, independiente del registro y acompañado de una explicación sobre el uso de los datos.
+
+La tarjeta mostrará un QR ampliable, el progreso de fidelidad y la recompensa disponible. El QR identificará la tarjeta en caja: no contendrá datos personales legibles ni permitirá iniciar sesión.
+
+La recuperación de acceso se realizará mediante un enlace temporal y de un solo uso, sujeto a validar la entrega de correo. Conocer el correo de un miembro no será suficiente para abrir su tarjeta. Las fotos personalizadas y las integraciones con Apple Wallet o Google Wallet quedan para evaluación posterior.
+
+## 5. Administración e inventario
+
+El dueño podrá consultar ventas confirmadas, número de tickets, ticket promedio, unidades vendidas y devoluciones. También administrará sucursales, menú, variantes, reglas de fidelidad, avisos y asignación de cajeros.
+
+La pregunta principal del inventario será: **¿qué insumos están por terminarse y cuándo conviene volver a comprarlos?**
+
+La vista **Qué necesito comprar** mostrará por sucursal:
+
+- Insumo, unidad de medida y existencia estimada.
+- Punto de reposición y unidad habitual de compra.
+- Fecha del último conteo y aviso cuando el saldo alcance o baje del mínimo.
+
+Para el piloto se propone comenzar con los insumos críticos, registro de compras, conteos físicos y ajustes. El descuento automático por producto requerirá definir recetas, variantes y unidades. Mientras el saldo dependa de conteos, se presentará como **estimado**.
+
+La falta de existencias registradas no bloqueará una venta. Los saldos negativos serán visibles para el dueño. La disponibilidad de un producto en el menú podrá administrarse por separado.
+
+## 6. Diseño visual
+
+Se conservará la distribución de los prototipos y se utilizará **THE SIP** como nombre visible. La interfaz tendrá controles táctiles para iPad, foco visible, formularios etiquetados y estados acompañados de texto o iconos.
+
+### Paleta de la interfaz
+
+| Uso | Punto de venta | Administración | Miembros |
+| --- | --- | --- | --- |
+| Principal de marca | `#6F0708` | `#6F0708` | `#6F0708` |
+| Superficie principal | `#FFFFFF` | `#FFFFFF` | `#FFFFFF` |
+| Texto principal | `#1B2B22` | `#262524` | `#282526` |
+| Texto secundario | `#69796F` | `#72706F` | `#756F70` |
+| Bordes | `#E5EBE6` | `#ECE8E6` | `#EEE9E8` |
+| Superficie suave | `#EEF2EE` | `#F8F6F5` | `#F7F4F2` |
+
+El burdeos se utilizará en navegación, acciones principales y selección activa. El color de error de caja es `#B34238`. Aunque el prototipo de caja declara `#F5F7F5` como fondo base, su superficie principal visible es blanca. Los fondos suaves de énfasis mezclan burdeos con blanco: 9 % de burdeos en caja y 7 % en administración.
+
+Los valores se centralizarán en `src/shared/styles/globals.css` mediante variables semánticas que consumirán Tailwind CSS y los componentes de shadcn/ui. Se verificará el contraste en el tamaño real de los controles.
+
+### Temas de la tarjeta del miembro
+
+| Diseño de referencia | Fondo | Texto |
+| --- | --- | --- |
+| Villa nevada | `#98A18E` | `#21362B` |
+| Pino de hilo | `#294B3C` | `#FFF2DA` |
+| Osito de luces | `#EDBEB2` | `#502C29` |
+| Regalo polar | `#1D5951` | `#FFF3DF` |
+| Santa en nieve | `#B8D7DB` | `#243C3D` |
+| Jengibre | `#EEE5D2` | `#51342A` |
+
+Estos temas pertenecen a las tarjetas y no cambian los colores de la caja. Cada diseño incluye una ilustración propia. El QR conservará una superficie clara y un margen libre independientemente del tema.
+
+## 7. Arquitectura y herramientas
+
+| Herramienta | Responsabilidad |
+| --- | --- |
+| React + TypeScript | Pantallas, componentes y contratos de datos. |
+| Vite + React Router | Compilación, navegación y carga por área. |
+| Tailwind CSS + shadcn/ui + variables CSS | Controles accesibles y estilos compartidos. |
+| Zustand y estado local de React | Carrito antes de iniciar el cobro y estado temporal de la interfaz. |
+| TanStack Query | Consultas, actualización de datos y estados de carga y error. |
+| React Hook Form + Zod | Formularios y validación. |
+| qr-scanner + qrcode | Lectura y generación de QR. |
+| Vitest + Playwright | Pruebas de reglas de negocio y recorridos completos. |
+
+El frontend consumirá una API. El servidor validará permisos, importes, vouchers, pagos y reglas de fidelidad. Los importes se manejarán como enteros en la unidad mínima de la moneda. Las credenciales de servicios y de la base de datos permanecerán en el servidor.
+
+La caché del navegador no es comprobante de pago. Cada operación de cobro tendrá un identificador estable que permita reintentarla sin duplicar efectos. Esta separación también deja abierta una futura fase sin conexión, **sin incorporar Dexie, una cola local ni sincronización offline al piloto**.
+
+### Estructura propuesta
+
+```text
+the-sip-frontend/
+├── README.md
+└── src/
+    ├── app/
+    │   ├── routes.tsx
+    │   ├── providers.tsx
+    │   └── guards/
+    ├── features/
+    │   ├── members/      # Registro, acceso y tarjeta
+    │   ├── pos/          # Venta, cobros pendientes y caja
+    │   └── owner/        # Reportes, menú, inventario y cajeros
+    └── shared/
+        ├── api/
+        ├── components/ui/
+        ├── styles/globals.css
+        └── types/
+```
+
+La estructura describe la implementación futura. El alojamiento deberá permitir abrir y recargar las rutas de React Router directamente.
+
+## 8. Servicios y presupuesto
+
+| Servicio propuesto | Uso |
+| --- | --- |
+| Cloudflare Workers Static Assets | Publicar el frontend. |
+| Cloudflare Workers | Ejecutar la API. |
+| Cloudflare D1 | Guardar tickets, pagos, movimientos, miembros y datos del negocio. |
+| Cloudflare Turnstile | Proteger formularios públicos, con verificación en el servidor. |
+| Brevo | Enviar enlaces de acceso o recuperación. |
+| Cloudinary | Opcional, solo si se habilitan fotos personalizadas. |
+
+**Costo de licencia cero no equivale a operación gratuita garantizada.** Antes de publicar se revisarán las cuotas vigentes, la entrega de correo y la idoneidad del alojamiento para uso comercial. Se puede iniciar la prueba sin comprar dominio; la entrega de enlaces por correo sin dominio autenticado debe validarse antes de depender de ella.
+
+Como referencia de dimensionamiento, **500 ventas diarias equivalen a unas 15,000 ventas en 30 días**. Si cada venta agregara 5 KB entre registros e índices, serían aproximadamente 75 MB mensuales. Es una hipótesis: el piloto medirá solicitudes, filas leídas y escritas, crecimiento real de la base, correos y costo de los reportes. Se definirá cómo exportar y restaurar el historial antes de agotar la capacidad disponible.
+
+El presupuesto no incluye desarrollo, mantenimiento, iPad, internet, terminal, comisiones bancarias ni un eventual dominio.
+
+**Referencias:** [Workers](https://developers.cloudflare.com/workers/platform/pricing/) · [D1: precios](https://developers.cloudflare.com/d1/platform/pricing/) · [D1: límites](https://developers.cloudflare.com/d1/platform/limits/) · [Turnstile](https://developers.cloudflare.com/turnstile/plans/) · [Brevo](https://help.brevo.com/hc/en-us/articles/208589409-About-Brevo-s-pricing-plans) · [Cloudinary](https://cloudinary.com/pricing).
+
+## 9. Validación del piloto
+
+**Prueba principal:** si la terminal aprueba un pago y el iPad falla antes de mostrar la confirmación, el cajero debe poder recuperar la compra **sin cobrar de nuevo ni duplicar la venta**.
+
+| Escenario | Resultado esperado |
+| --- | --- |
+| El servidor no confirma que guardó el ticket | La interfaz no indica al cajero que proceda a cobrar. |
+| La terminal aprueba y el iPad falla antes de registrar el voucher | El ticket pendiente se recupera y se confirma con el voucher. |
+| El servidor registra el pago, pero el iPad no recibe la respuesta | Al consultar o reintentar aparece la misma venta pagada, sin duplicados. |
+| Se intenta usar el mismo voucher en otra venta | El servidor impide el segundo registro. |
+| Se devuelve en efectivo una venta pagada con tarjeta | Se conserva el cobro en terminal y se registra una sola salida de efectivo vinculada a la venta. |
+| Se cierra un turno con efectivo, tarjeta y pagos mixtos | El efectivo esperado y los importes de terminal pueden conciliarse por separado. |
+| Un insumo alcanza su punto de reposición | Aparece en la lista de compra de la sucursal correcta. |
+
+También se probarán el registro con los campos opcionales vacíos, el acceso por enlace, los permisos por sucursal, la prevención de sellos y canjes duplicados y la lectura de QR en el iPad real. La cámara requiere HTTPS y permiso del usuario; debe detenerse al terminar la lectura o salir de la pantalla.
+
+## 10. Decisiones pendientes y puesta en marcha
+
+Antes de operar con clientes se definirán:
+
+- Modelo de iPad, versión mínima de iPadOS y navegadores probados.
+- Autenticación de dueños y cajeros, y alcance del PIN del prototipo.
+- Identificador exacto del voucher y regla de unicidad de la terminal real.
+- Tratamiento de tickets pendientes al cerrar turno y efecto de una devolución sobre fidelidad.
+- Reglas de acumulación y canje, insumos críticos y puntos de reposición iniciales.
+- Contratos de la API, esquema de datos y organización del backend.
+- Entrega de correo, alojamiento comercial, conservación y restauración del historial.
+
+**Orden de implementación:** primero se validará un turno completo en iPad: abrir caja, crear un ticket, cobrar, recuperar un pago interrumpido por voucher, registrar una devolución y cerrar caja. Después se completarán los flujos de miembros, inventario y administración.
+
+Todavía no existe `package.json` ni hay comandos de instalación o ejecución. Se añadirán cuando se cree la base con React, TypeScript y Vite.
