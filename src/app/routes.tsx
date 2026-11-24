@@ -14,16 +14,20 @@ export function AppRoutes() {
     <BrowserRouter>
       <Suspense fallback={<p role="status">Cargando página…</p>}>
         <Routes>
-          <Route element={<SiteLayout />}>
+          <Route element={<SiteLayout area="members" />}>
             <Route index element={<Navigate to={paths.registration} replace />} />
             <Route path={paths.registration} element={<MemberRegistrationPage />} />
             <Route path={paths.memberCard} element={<MemberCardPage />} />
-            <Route path={paths.sale} element={<SalePage />} />
-            <Route path={paths.owner} element={<OwnerDashboardPage />} />
             <Route path="*" element={<>
               <AreaIntroduction title="Página no encontrada" description="Esta dirección no corresponde a una página de THE SIP." />
               <Link to={paths.registration}>Ir al registro de miembros</Link>
             </>} />
+          </Route>
+          <Route element={<SiteLayout area="pos" />}>
+            <Route path={paths.sale} element={<SalePage />} />
+          </Route>
+          <Route element={<SiteLayout area="owner" />}>
+            <Route path={paths.owner} element={<OwnerDashboardPage />} />
           </Route>
         </Routes>
       </Suspense>

@@ -42,7 +42,7 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o dueño autorizado |
 | Administración | `/dueno` | Dueño |
 
-La base local incluye las cuatro rutas y navegación entre sus vistas iniciales. El registro es una vista previa; las rutas privadas solo muestran información de acceso. Todavía no se exponen tarjetas, ventas ni datos del negocio.
+La base local incluye cuatro páginas con entradas separadas. El portal público enlaza únicamente el registro y la tarjeta; el iPad del cajero abre directamente `/caja/venta`, y el dueño entra por `/dueno`. Comparten estilos, pero no un menú global. El registro es una vista previa; las rutas privadas solo muestran información de acceso.
 
 La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
 
