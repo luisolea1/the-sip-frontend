@@ -1,41 +1,84 @@
+import type { ReactNode } from "react";
 import type { CardDesign } from "../card-designs";
 
-const motifs = {
+function BearHead() {
+  return <g transform="rotate(-9 57 43)">
+    <g fill="#f8efdf"><circle cx="29" cy="22" r="11"/><circle cx="82" cy="22" r="11"/></g>
+    <g fill="#eebfae"><circle cx="29" cy="22" r="6"/><circle cx="82" cy="22" r="6"/></g>
+    <ellipse cx="56" cy="45" rx="36" ry="32" fill="#f8efdf"/>
+    <g fill="#263a32"><circle cx="42" cy="43" r="2.7"/><circle cx="66" cy="42" r="2.7"/><ellipse cx="55" cy="50" rx="4.8" ry="3.4"/></g>
+    <g fill="#efc2b1"><circle cx="34" cy="54" r="5.3"/><circle cx="76" cy="53" r="5.3"/></g>
+  </g>;
+}
+
+function PolarGift() {
+  return <>
+    <path fill="#f8efdf" d="M27 111q-2-47 23-51 26-5 37 18l10 33Z"/>
+    <BearHead />
+    <g transform="rotate(10 71 87)">
+      <rect x="42" y="66" width="51" height="43" rx="4" fill="#ba3036"/>
+      <path d="M67 67q-22-7-17-16 8-8 17 16 11-19 19-13 6 7-19 13Z" fill="none" stroke="#175346" strokeWidth="4"/>
+      <path d="M64 67h7v42h-7z" fill="#175346"/>
+    </g>
+    <g fill="#f8efdf"><ellipse cx="39" cy="84" rx="14" ry="9" transform="rotate(32 39 84)"/><ellipse cx="96" cy="96" rx="8" ry="10" transform="rotate(-25 96 96)"/></g>
+  </>;
+}
+
+function BearLights() {
+  return <>
+    <path d="M21 112q0-42 30-49 35-5 46 49Z" fill="#ba444c"/>
+    <BearHead />
+    <path d="M29 65q25 15 55 0l4 10q-35 17-60 1Zm42 13 10-1 2 23-10 1Z" fill="#a52e3b"/>
+    <path d="M24 89q34 17 68-2" fill="none" stroke="#775038" strokeWidth="1.6"/>
+    <g fill="#ffda92"><ellipse cx="33" cy="95" rx="2" ry="4"/><ellipse cx="56" cy="100" rx="2" ry="4"/></g>
+    <g fill="#f4ada8"><ellipse cx="44" cy="98" rx="2" ry="4"/><ellipse cx="80" cy="94" rx="2" ry="4"/></g>
+    <g fill="#a1be95"><ellipse cx="68" cy="98" rx="2" ry="4"/><path d="m29 103 1 6m58-8 1 5" stroke="#a1be95"/></g>
+  </>;
+}
+
+function ThreadPine() {
+  return <g fill="none" stroke="#f7d698" strokeWidth="2.1" strokeLinecap="round">
+    <path d="M55 18c-13 0-14 13-4 12 11-2 9-13 3-12m-1 14c-20 2-24 23-13 24 13 0 20-25 12-23-7 3 4 25 15 20 8-5-4-23-13-20"/>
+    <path d="M44 52C20 59 15 82 26 82c12 0 27-30 18-29-8 1 2 30 12 29 12-1 12-27 3-27-9 1 9 30 20 24 10-6-8-25-17-27"/>
+    <path d="M31 79c-16 5-24 23-13 25 13 3 23-22 17-22-6 1-4 23 6 23 13-1 17-26 9-25-7 1 1 27 12 25 12-2 8-24 1-23-5 2 10 24 20 20 12-5-2-24-10-24m-21 28 4 4 5-5"/>
+    <path fill="#f7d698" stroke="none" d="m55 5 2 5 6 1-5 3 1 5-4-3-5 3 1-5-4-3 6-1Z"/>
+  </g>;
+}
+
+const motifs: Record<CardDesign["id"], ReactNode> = {
+  "polar-gift": <PolarGift />,
+  "bear-lights": <BearLights />,
+  "thread-pine": <ThreadPine />,
   "snow-village": <>
-    <path d="m18 66 29-27 29 27m-50-6v33h43V60m1-9 21-20 25 25m-36-9v34h29V52M40 92V72h13v20" />
-    <path d="m23 62 12-4 6-8 6 3 6-7M94 59h7v9h-7zM8 99q20-8 48-3t62-8" />
-  </>,
-  "thread-pine": <>
-    <path d="m64 16-21 28h11L34 66h14L24 91q40 8 80 0L80 66h14L74 44h11ZM60 96v10h9V96" />
-    <path d="m51 40 24-6m-32 25 39-9m-47 28 53-12m-60 23 63-13" />
-  </>,
-  "bear-lights": <>
-    <circle cx="40" cy="42" r="12" /><circle cx="88" cy="42" r="12" />
-    <ellipse cx="64" cy="65" rx="34" ry="29" /><ellipse cx="64" cy="73" rx="12" ry="9" />
-    <path d="M50 59h1m26 0h1m-17 9h6l-3 4zM15 85q44 33 96-4m-80 16-2 6m27-1v7m28-13 3 6" />
-  </>,
-  "polar-gift": <>
-    <path d="M29 60h70v37H29zM25 47h78v14H25zM58 47h12v50M64 46C32 46 34 18 48 25q10 3 16 21Zm0 0c32 0 30-28 16-21q-10 3-16 21Z" />
-    <path d="m39 72 3 4 5 1-4 3 1 5-5-3-4 2 1-4-3-4 5-1z" />
+    <path d="M6 100h99" stroke="#e4e3ca" strokeWidth="2"/>
+    <path d="M17 97V61l13-18 13 18v36Z" fill="#b76f49"/><path d="m14 63 16-24 17 24-7-3-10-15-11 16Z" fill="#f3e8d4"/>
+    <path d="M44 98V70l12-15 13 15v28Z" fill="#354a36"/><path d="m70 98 1-40 15-25 15 25v40Z" fill="#f4ecd9"/>
+    <path d="m68 61 18-31 18 31-7-4-11-18-12 18Z" fill="#fffaeb"/>
+    <path d="M27 70h6v7h-6zm0 13h6v11h-6zm55-19h5v8h-5zm0 14h5v8h-5z" fill="#edc777"/>
+    <path d="M56 86q-12-7-7-12 4-2 7 3 3-5 7-3 4 4-7 12" fill="#edc777"/>
+    <path d="M9 75v24m-5-17 5 4 5-6m-10 9 5 4 6-5" fill="none" stroke="#e8e6d1" strokeWidth="2"/>
   </>,
   "snow-santa": <>
-    <path d="M32 54q10-39 35-33 23 3 32 27-12-8-22-7l5 12M32 53q23-5 51 0v10q-25-4-51 0z" />
-    <circle cx="101" cy="50" r="6" /><path d="M35 64q-2 14 4 19m38-20q3 12-2 21M37 77q8 4 16-3 4 5 10 0 7 7 15 2-2 21-23 29-14-7-18-29zM45 67h1m20 0h1" />
+    <path d="m39 59-14-29 11-5 17 30m9-4 8-29 13 4-6 31" fill="#b73533"/>
+    <path d="m26 36-6-12q-9-1-11-8-1-7 8-6 12-1 16 9l5 11zm42-10 3-11q4-6 15-7 10 0 10 6-1 6-12 9l-3 7Z" fill="#243834"/>
+    <path d="M20 70h78v37H20z" fill="#b83234"/><path d="M20 92h78v10H20z" fill="#30362e"/><path d="M53 91h14v12H53z" fill="none" stroke="#e5bc69" strokeWidth="3"/>
+    <path d="M13 69q-1-9 9-10-2-10 8-11 0-9 10-8 8 1 9 10 8-5 14 2 8-13 18-7 8 3 7 12 12-1 12 10 10 2 8 9-1 8-11 7-6 9-16 2-8 7-17-1-10 7-18-1-10 7-17-2-12 7-16-2-11-2 0-10Z" fill="#fff6e8"/>
   </>,
-  gingerbread: <>
-    <path d="M48 46a18 18 0 1 1 32 0l16-5c13-4 18 12 7 17L84 68l9 21c6 14-10 21-18 9L64 84 53 99c-8 11-24 4-18-9l9-22-20-10c-11-6-4-21 8-17Z" />
-    <path d="M57 32h1m12 0h1m-13 8q6 5 12-1m-32 47 8 2 4 6m29-6 4-2 6 2" />
-    <circle cx="64" cy="57" r="2" /><circle cx="64" cy="69" r="2" />
-  </>,
-} satisfies Record<CardDesign["id"], React.ReactNode>;
+  gingerbread: <g transform="rotate(-16 56 61)">
+    <path d="M37 40a22 22 0 1 1 37 1l18 11c9 6 3 18-5 15L72 60l1 16 8 24c3 10-10 16-15 7L55 89l-11 18c-5 9-18 2-14-7l10-25 1-16-17 8c-10 5-16-8-7-14Z" fill="#aa642f"/>
+    <g fill="#553626"><circle cx="48" cy="24" r="2.4"/><circle cx="64" cy="24" r="2.4"/><path d="M50 32q6 6 12 0-5 11-12 0"/></g>
+    <g fill="#bb3937"><circle cx="43" cy="30" r="3"/><circle cx="70" cy="30" r="3"/><circle cx="56" cy="54" r="3"/></g>
+    <circle cx="56" cy="67" r="3" fill="#335c48"/>
+    <path d="m32 94 4-2 3 4 4-2m24 0 4-2 4 3m-60-34 4-1 1-5" fill="none" stroke="#f7dabb" strokeWidth="2"/>
+    <path d="m85 75 7-26q3-9 10-6 5 2 3 9" fill="none" stroke="#fff4dc" strokeWidth="7" strokeLinecap="round"/>
+    <path d="m86 67 6 2m-3-12 6 2m-2-13 5 3m3-5 5 3" stroke="#bc3940" strokeWidth="4"/>
+  </g>,
+};
 
 export function CardIllustration({ design }: { design: CardDesign }) {
-  return (
-    <svg aria-hidden="true" width="128" height="112" viewBox="0 0 128 112"
-      className="h-auto w-28 max-w-full sm:w-40" fill="none" stroke="currentColor"
-      strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v8m-4-4h8m85 43v6m-3-3h6" opacity=".65" />
-      {motifs[design.id]}
-    </svg>
-  );
+  return <svg aria-hidden="true" width="112" height="112" viewBox="0 0 112 112" className="block size-full">
+    <g fill="#f9e9c2"><circle cx="10" cy="36" r="1.4"/><circle cx="103" cy="34" r="1.2"/><circle cx="19" cy="8" r="1.2"/>
+      <path d="m96 5 1.2 4.8 4.8 1.2-4.8 1.2-1.2 4.8-1.2-4.8L90 11l4.8-1.2Z"/></g>
+    {motifs[design.id]}
+  </svg>;
 }
