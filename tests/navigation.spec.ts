@@ -9,12 +9,12 @@ test("el portal de miembros enlaza registro y tarjeta sin mostrar áreas del per
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Hola, Miembro.");
   await expect(staffLinks).toHaveCount(0);
   await page.getByRole("link", { name: "Volver al registro de miembros" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Registro de miembros");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Registro");
 });
 
 test("las páginas admiten acceso directo y recarga sin desbordamiento", async ({ page }) => {
   const destinations = [
-    { path: "/registro-miembros", title: "Registro de miembros", staff: false },
+    { path: "/registro-miembros", title: "Registro", staff: false },
     { path: "/mi-tarjeta", title: "Mi tarjeta", heading: "Hola, Miembro.", staff: false },
     { path: "/mi-tarjeta/disenos", title: "Elegir diseño", heading: /Tu pausa\.\s*Con magia\./, staff: false },
     { path: "/caja/venta", title: "Punto de venta", staff: true },
@@ -47,5 +47,5 @@ test("una dirección desconocida ofrece un enlace de regreso al registro", async
   await page.goto("/ruta-inexistente");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Página no encontrada");
   await page.getByRole("link", { name: "Ir al registro de miembros" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Registro de miembros");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Registro");
 });

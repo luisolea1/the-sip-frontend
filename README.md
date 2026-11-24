@@ -109,7 +109,9 @@ Las devoluciones en efectivo se incluyen una sola vez dentro de las salidas. En 
 
 ## 4. Registro y tarjeta de miembros
 
-El formulario solicitará nombre y correo electrónico. Para conocer al público y ofrecer promociones de cumpleaños se usarán dos campos independientes y opcionales:
+En `/registro-miembros`, el botón **Registrarse** valida el nombre y el correo y abre `/mi-tarjeta` con el saludo, las iniciales y el nombre del miembro. El perfil se mantiene en memoria al elegir un diseño y se borra al recargar. El correo no aparece en la tarjeta ni en el QR. No se crea una cuenta en el servidor.
+
+Para conocer al público y ofrecer promociones de cumpleaños se prevén dos campos independientes y opcionales:
 
 | Campo | Opciones o formato |
 | --- | --- |
