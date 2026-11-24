@@ -9,7 +9,7 @@ const memberNavigation = [
 const areas = {
   members: { label: "Portal de miembros", theme: "members-area-theme" },
   pos: { label: "Caja", theme: "pos-area-theme" },
-  owner: { label: "Administración", theme: "" },
+  admin: { label: "Administración", theme: "" },
 };
 
 export function SiteLayout({ area }: { area: keyof typeof areas }) {

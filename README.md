@@ -39,10 +39,10 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | --- | --- | --- |
 | Registro de miembros | `/registro-miembros` | Público |
 | Tarjeta del miembro | `/mi-tarjeta` | Miembro autenticado |
-| Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o dueño autorizado |
-| Administración | `/dueno` | Dueño |
+| Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o administrador autorizado |
+| Administración | `/administrador` | Administrador |
 
-La base local incluye cuatro páginas con entradas separadas. El portal público enlaza únicamente el registro y la tarjeta; el iPad del cajero abre directamente `/caja/venta`, y el dueño entra por `/dueno`. Comparten estilos, pero no un menú global. El registro es una vista previa; las rutas privadas solo muestran información de acceso.
+La base local incluye cuatro páginas con entradas separadas. El portal público enlaza únicamente el registro y la tarjeta; el iPad del cajero abre directamente `/caja/venta`, y el administrador entra por `/administrador`. Comparten estilos, pero no un menú global. El registro es una vista previa; las rutas privadas solo muestran información de acceso.
 
 La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
 
@@ -50,7 +50,7 @@ La API verificará los permisos y la sucursal en cada operación. Cambiar la URL
 
 - [Punto de venta](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/#sale?cafe=centro)
 - [Registro de miembros](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/registro-miembros)
-- [Administración del dueño](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/dueno#summary?cafe=centro)
+- [Panel de administración](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/dueno#summary?cafe=centro)
 
 Los prototipos son la referencia visual y de navegación. Para las reglas de operación prevalece este README. Los datos, correos, cobros y tarjetas de ejemplo no representan integraciones reales.
 
@@ -123,7 +123,7 @@ La recuperación de acceso se realizará mediante un enlace temporal y de un sol
 
 ## 5. Administración e inventario
 
-El dueño podrá consultar ventas confirmadas, número de tickets, ticket promedio, unidades vendidas y devoluciones. También administrará sucursales, menú, variantes, reglas de fidelidad, avisos y asignación de cajeros.
+El administrador podrá consultar ventas confirmadas, número de tickets, ticket promedio, unidades vendidas y devoluciones. También administrará sucursales, menú, variantes, reglas de fidelidad, avisos y asignación de cajeros.
 
 La pregunta principal del inventario será: **¿qué insumos están por terminarse y cuándo conviene volver a comprarlos?**
 
@@ -135,7 +135,7 @@ La vista **Qué necesito comprar** mostrará por sucursal:
 
 Para el piloto se propone comenzar con los insumos críticos, registro de compras, conteos físicos y ajustes. El descuento automático por producto requerirá definir recetas, variantes y unidades. Mientras el saldo dependa de conteos, se presentará como **estimado**.
 
-La falta de existencias registradas no bloqueará una venta. Los saldos negativos serán visibles para el dueño. La disponibilidad de un producto en el menú podrá administrarse por separado.
+La falta de existencias registradas no bloqueará una venta. Los saldos negativos serán visibles para el administrador. La disponibilidad de un producto en el menú podrá administrarse por separado.
 
 ## 6. Diseño visual
 
@@ -205,7 +205,7 @@ the-sip-frontend/
     ├── features/
     │   ├── members/      # Registro, acceso y tarjeta
     │   ├── pos/          # Venta, cobros pendientes y caja
-    │   └── owner/        # Reportes, menú, inventario y cajeros
+    │   └── admin/        # Reportes, menú, inventario y cajeros
     └── shared/
         ├── api/
         ├── components/ui/
@@ -255,7 +255,7 @@ También se probarán el registro con los campos opcionales vacíos, el acceso p
 Antes de operar con clientes se definirán:
 
 - Modelo de iPad, versión mínima de iPadOS y navegadores probados.
-- Autenticación de dueños y cajeros, y alcance del PIN del prototipo.
+- Autenticación de administradores y cajeros, y alcance del PIN del prototipo.
 - Identificador exacto del voucher y regla de unicidad de la terminal real.
 - Tratamiento de tickets pendientes al cerrar turno y efecto de una devolución sobre fidelidad.
 - Reglas de acumulación y canje, insumos críticos y puntos de reposición iniciales.

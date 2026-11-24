@@ -7,7 +7,7 @@ import { SiteLayout } from "./SiteLayout";
 const MemberRegistrationPage = lazy(() => import("@/features/members/pages/MemberRegistrationPage"));
 const MemberCardPage = lazy(() => import("@/features/members/pages/MemberCardPage"));
 const SalePage = lazy(() => import("@/features/pos/pages/SalePage"));
-const OwnerDashboardPage = lazy(() => import("@/features/owner/pages/OwnerDashboardPage"));
+const AdminDashboardPage = lazy(() => import("@/features/admin/pages/AdminDashboardPage"));
 
 export function AppRoutes() {
   return (
@@ -26,8 +26,9 @@ export function AppRoutes() {
           <Route element={<SiteLayout area="pos" />}>
             <Route path={paths.sale} element={<SalePage />} />
           </Route>
-          <Route element={<SiteLayout area="owner" />}>
-            <Route path={paths.owner} element={<OwnerDashboardPage />} />
+          <Route element={<SiteLayout area="admin" />}>
+            <Route path={paths.admin} element={<AdminDashboardPage />} />
+            <Route path="/dueno" element={<Navigate to={paths.admin} replace />} />
           </Route>
         </Routes>
       </Suspense>
