@@ -75,15 +75,21 @@
 
 @layer components {
   .member-card-design-option {
-    @apply flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-border bg-card px-3 py-2;
+    @apply relative grid min-w-0 cursor-pointer content-start gap-2;
   }
-  .member-card-design-option:hover,
-  .member-card-design-option:focus-within,
-  .member-card-design-option:has(:checked) {
-    @apply border-primary bg-accent;
+  .member-card-design-thumbnail {
+    @apply relative block aspect-square rounded-xl;
   }
-  @media (prefers-reduced-motion: no-preference) {
-    .member-card-design-option { transition: background-color 150ms, border-color 150ms; }
+  .member-card-design-option input:checked + .member-card-design-thumbnail {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+  }
+  .member-card-design-option input:focus-visible + .member-card-design-thumbnail {
+    outline: 3px dashed var(--primary);
+    outline-offset: 3px;
+  }
+  .member-card-primary-button {
+    @apply min-h-12 cursor-pointer rounded-2xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-[#550607];
   }
   .app-area-content-panel {
     @apply grid min-w-0 gap-4 rounded-xl border border-border bg-card p-5 sm:p-6;

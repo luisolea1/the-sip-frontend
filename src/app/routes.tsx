@@ -6,6 +6,8 @@ import { SiteLayout } from "./SiteLayout";
 
 const MemberRegistrationPage = lazy(() => import("@/features/members/pages/MemberRegistrationPage"));
 const MemberCardPage = lazy(() => import("@/features/members/pages/MemberCardPage"));
+const MemberCardLayout = lazy(() => import("@/features/members/components/MemberCardLayout"));
+const MemberCardDesignPage = lazy(() => import("@/features/members/pages/MemberCardDesignPage"));
 const SalePage = lazy(() => import("@/features/pos/pages/SalePage"));
 const AdminDashboardPage = lazy(() => import("@/features/admin/pages/AdminDashboardPage"));
 
@@ -17,11 +19,14 @@ export function AppRoutes() {
           <Route element={<SiteLayout area="members" />}>
             <Route index element={<Navigate to={paths.registration} replace />} />
             <Route path={paths.registration} element={<MemberRegistrationPage />} />
-            <Route path={paths.memberCard} element={<MemberCardPage />} />
             <Route path="*" element={<>
               <AreaIntroduction title="Página no encontrada" description="Esta dirección no corresponde a una página de THE SIP." />
               <Link to={paths.registration}>Ir al registro de miembros</Link>
             </>} />
+          </Route>
+          <Route element={<MemberCardLayout />}>
+            <Route path={paths.memberCard} element={<MemberCardPage />} />
+            <Route path={paths.memberCardDesigns} element={<MemberCardDesignPage />} />
           </Route>
           <Route element={<SiteLayout area="pos" />}>
             <Route path={paths.sale} element={<SalePage />} />
