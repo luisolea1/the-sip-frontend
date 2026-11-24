@@ -274,3 +274,12 @@ npm run dev
 ```
 
 Abrir la dirección que indique Vite. `npm run build` comprueba TypeScript y genera los archivos estáticos en `dist/`. `npm run preview` sirve esa compilación localmente.
+
+Para verificar navegación, recarga directa y ancho de pantalla en Chromium:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+Estas pruebas usan anchos de 320, 1024 y 1440 píxeles; la validación física en iPad sigue pendiente.
