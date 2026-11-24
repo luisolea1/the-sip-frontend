@@ -38,7 +38,7 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | Área | Ruta | Acceso |
 | --- | --- | --- |
 | Registro de miembros | `/registro-miembros` | Público |
-| Tarjeta del miembro | `/mi-tarjeta` | Miembro autenticado |
+| Galería de tarjetas de muestra | `/mi-tarjeta` | Público; las tarjetas reales requerirán sesión |
 | Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o administrador autorizado |
 | Administración | `/administrador` | Administrador |
 
@@ -173,7 +173,7 @@ Los valores se centralizarán en `src/shared/styles/globals.css` mediante variab
 | Santa en nieve | `#B8D7DB` | `#243C3D` |
 | Jengibre | `#EEE5D2` | `#51342A` |
 
-Estos temas pertenecen a las tarjetas y no cambian los colores de la caja. Cada diseño incluye una ilustración propia. El QR conservará una superficie clara y un margen libre independientemente del tema.
+Estos temas se pueden explorar directamente en `/mi-tarjeta`, sin registro. Cada diseño incluye una ilustración vectorial propia y conserva la paleta de referencia. Los sellos son ficticios y el QR contiene solo un texto de muestra sin validez en caja. La selección vive en la memoria de la página y se reinicia al recargar.
 
 ## 7. Arquitectura y herramientas
 
