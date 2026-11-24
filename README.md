@@ -7,6 +7,19 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 **Alcance del piloto:** una sucursal, un iPad y operación exclusivamente con internet.  
 **Objetivo de costo:** utilizar herramientas sin costo de licencia y mantener los servicios dentro de sus planes gratuitos.
 
+### Índice
+
+1. [Alcance](#1-alcance)
+2. [Áreas y accesos](#2-áreas-y-accesos)
+3. [Punto de venta y caja](#3-punto-de-venta-y-caja)
+4. [Registro y tarjeta de miembros](#4-registro-y-tarjeta-de-miembros)
+5. [Administración e inventario](#5-administración-e-inventario)
+6. [Diseño visual](#6-diseño-visual)
+7. [Arquitectura y herramientas](#7-arquitectura-y-herramientas)
+8. [Servicios y presupuesto](#8-servicios-y-presupuesto)
+9. [Validación del piloto](#9-validación-del-piloto)
+10. [Decisiones pendientes y puesta en marcha](#10-decisiones-pendientes-y-puesta-en-marcha)
+
 ## 1. Alcance
 
 - Un solo negocio, preparado para incorporar varias sucursales.
@@ -40,6 +53,8 @@ La API verificará los permisos y la sucursal en cada operación. Cambiar la URL
 - [Administración del dueño](https://cafe-olivo-diseno.aptwatermelon1.chatgpt.site/dueno#summary?cafe=centro)
 
 Los prototipos son la referencia visual y de navegación. Para las reglas de operación prevalece este README. Los datos, correos, cobros y tarjetas de ejemplo no representan integraciones reales.
+
+La consulta sin autenticación de los tres prototipos devuelve `401`; su revisión requiere acceso.
 
 ## 3. Punto de venta y caja
 
@@ -125,6 +140,12 @@ La falta de existencias registradas no bloqueará una venta. Los saldos negativo
 ## 6. Diseño visual
 
 Se conservará la distribución de los prototipos y se utilizará **THE SIP** como nombre visible. La interfaz tendrá controles táctiles para iPad, foco visible, formularios etiquetados y estados acompañados de texto o iconos.
+
+Cada página tendrá un solo `h1`, encabezados en orden lógico y enlaces con destinos y textos descriptivos. Las imágenes informativas llevarán texto alternativo y las decorativas, `alt=""`. Se optimizarán los recursos, incluidos los SVG. El diseño usará Flexbox o Grid sin desbordamiento horizontal. Las fuentes locales se cargarán con `@font-face`; las transiciones respetarán la preferencia de movimiento reducido.
+
+### Nombres de clases CSS
+
+Las clases CSS propias de THE SIP se escribirán en inglés y en `kebab-case`. Cada nombre indicará el área y describirá la función del elemento: por ejemplo, `pos-confirm-payment-button` para el botón que confirma el pago en caja. Se evitarán nombres genéricos como `btn1` o basados solo en la apariencia como `red-button`. Las utilidades de Tailwind conservarán sus nombres estándar.
 
 ### Paleta de la interfaz
 
