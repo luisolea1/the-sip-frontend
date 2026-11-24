@@ -3,7 +3,7 @@
 Aplicación web para el punto de venta, la administración de cafeterías y el portal de miembros de THE SIP.
 
 **Repositorio:** `the-sip-frontend`  
-**Estado:** definición previa a la implementación. Todavía no hay una aplicación ejecutable, dependencias instaladas ni servicios configurados.  
+**Estado:** base del frontend ejecutable en desarrollo local. La API, la autenticación y los servicios del piloto están pendientes de integración.  
 **Alcance del piloto:** una sucursal, un iPad y operación exclusivamente con internet.  
 **Objetivo de costo:** utilizar herramientas sin costo de licencia y mantener los servicios dentro de sus planes gratuitos.
 
@@ -264,4 +264,13 @@ Antes de operar con clientes se definirán:
 
 **Orden de implementación:** primero se validará un turno completo en iPad: abrir caja, crear un ticket, cobrar, recuperar un pago interrumpido por voucher, registrar una devolución y cerrar caja. Después se completarán los flujos de miembros, inventario y administración.
 
-Todavía no existe `package.json` ni hay comandos de instalación o ejecución. Se añadirán cuando se cree la base con React, TypeScript y Vite.
+### Desarrollo local
+
+Con Node.js 22.12 o superior y npm, ejecutar desde la raíz del repositorio:
+
+```bash
+npm ci
+npm run dev
+```
+
+Abrir la dirección que indique Vite. `npm run build` comprueba TypeScript y genera los archivos estáticos en `dist/`. `npm run preview` sirve esa compilación localmente.
