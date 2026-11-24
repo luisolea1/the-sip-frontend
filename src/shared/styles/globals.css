@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Inter";
+  src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  --primary: #6f0708;
+  --primary-foreground: #fff;
+  --background: #fff;
+  --foreground: #262524;
+  --muted: #f8f6f5;
+  --muted-foreground: #72706f;
+  --border: #ece8e6;
+  --input: #898483;
+  --ring: var(--primary);
+  --radius: 0.75rem;
+  --accent: color-mix(in srgb, var(--primary) 7%, white);
+  --destructive: #b34238;
+}
+
+.pos-area-theme {
+  --foreground: #1b2b22;
+  --muted: #eef2ee;
+  --muted-foreground: #69796f;
+  --border: #e5ebe6;
+  --accent: color-mix(in srgb, var(--primary) 9%, white);
+}
+
+.members-area-theme {
+  --foreground: #282526;
+  --muted: #f7f4f2;
+  --muted-foreground: #756f70;
+  --border: #eee9e8;
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--background);
+  --color-card-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--muted);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--primary);
+  --color-destructive: var(--destructive);
+}
+
+@layer base {
+  body { @apply bg-background font-sans text-foreground; }
+  h1 { @apply text-3xl font-bold sm:text-4xl; }
+  h2 { @apply text-xl font-semibold; }
+  a { @apply text-primary underline underline-offset-4; }
+  a:hover { @apply decoration-2; }
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+  a, button, input, select { transition: background-color 150ms, border-color 150ms, box-shadow 150ms; }
+  button:enabled:active { transform: translateY(1px); }
+  @media (prefers-reduced-motion: reduce) {
+    a, button, input, select { transition: none; }
+    button:enabled:active { transform: none; }
+  }
+}
+
+@layer components {
+  .shared-form-text-input {
+    @apply w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2.5 text-base;
+  }
+  .shared-form-text-input::placeholder { color: #686361; }
+  .shared-form-text-input:focus { border-color: var(--primary); }
+}
