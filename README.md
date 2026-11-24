@@ -38,11 +38,12 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | Área | Ruta | Acceso |
 | --- | --- | --- |
 | Registro de miembros | `/registro-miembros` | Público |
-| Galería de tarjetas de muestra | `/mi-tarjeta` | Público; las tarjetas reales requerirán sesión |
+| Tarjeta de muestra | `/mi-tarjeta` | Público; las tarjetas reales requerirán sesión |
+| Selector de diseños | `/mi-tarjeta/disenos` | Público, sin registro |
 | Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o administrador autorizado |
 | Administración | `/administrador` | Administrador |
 
-La base local incluye cuatro páginas con entradas separadas. El portal público enlaza únicamente el registro y la tarjeta; el iPad del cajero abre directamente `/caja/venta`, y el administrador entra por `/administrador`. Comparten estilos, pero no un menú global. El registro es una vista previa; las rutas privadas solo muestran información de acceso.
+El portal público incluye el registro, la tarjeta y su selector de diseños; el iPad del cajero abre directamente `/caja/venta`, y el administrador entra por `/administrador`. Comparten estilos, pero no un menú global. El registro es una vista previa; las rutas privadas solo muestran información de acceso.
 
 La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
 
@@ -173,7 +174,7 @@ Los valores se centralizarán en `src/shared/styles/globals.css` mediante variab
 | Santa en nieve | `#B8D7DB` | `#243C3D` |
 | Jengibre | `#EEE5D2` | `#51342A` |
 
-Estos temas se pueden explorar directamente en `/mi-tarjeta`, sin registro. Cada diseño incluye una ilustración vectorial propia y conserva la paleta de referencia. Los sellos son ficticios y el QR contiene solo un texto de muestra sin validez en caja. La selección vive en la memoria de la página y se reinicia al recargar.
+La tarjeta de ejemplo empieza con **Regalo polar**, el número `01725` y cero de diez cafés. **Mostrar mi QR** amplía el código de muestra sin salir de la página. **Elegir diseño** abre `/mi-tarjeta/disenos`, con seis miniaturas ilustradas. **Guardar diseño** aplica el cambio solo en memoria; volver sin guardar conserva el diseño anterior. Al recargar se recupera Regalo polar. El QR no identifica a ningún miembro real.
 
 ## 7. Arquitectura y herramientas
 

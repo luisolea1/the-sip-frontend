@@ -1,20 +1,36 @@
 import { expect, test } from "@playwright/test";
 
-test("la galería pública permite explorar los seis diseños sin conservar la selección", async ({ page }) => {
+test("la tarjeta permite ampliar y cerrar el QR sin cambiar de página", async ({ page }) => {
   await page.goto("/mi-tarjeta");
-  const designs = ["Villa nevada", "Pino de hilo", "Osito de luces", "Regalo polar", "Santa en nieve", "Jengibre"];
-  const picker = page.getByRole("group", { name: "Elige un diseño" });
-  const initial = picker.getByRole("radio", { name: designs[0] });
+  await expect(page.getByRole("article", { name: "Tarjeta de muestra: Regalo polar" })).toContainText("01725");
+  await expect(page.getByRole("radio")).toHaveCount(0);
+  const trigger = page.getByRole("button", { name: "Mostrar mi QR" });
+  await trigger.click();
+  const dialog = page.getByRole("dialog", { name: "Mi QR" });
+  await expect(dialog.getByRole("img", { name: "QR ampliado de muestra" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await expect(page).toHaveURL(/\/mi-tarjeta$/);
+});
+
+test("guardar aplica el diseño, cancelar lo conserva y recargar restablece la muestra", async ({ page }) => {
+  await page.goto("/mi-tarjeta/disenos");
+  await expect(page.getByRole("radio")).toHaveCount(6);
+  const initial = page.getByRole("radio", { name: "Regalo polar" });
   await expect(initial).toBeChecked();
   await initial.focus();
-  await page.keyboard.press("ArrowDown");
-  await expect(page.getByRole("article", { name: designs[1] })).toBeVisible();
-
-  for (const design of designs) {
-    await picker.getByRole("radio", { name: design }).check();
-    await expect(page.getByRole("article", { name: design }).getByText("De muestra", { exact: true })).toBeVisible();
-  }
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "Santa en nieve" })).toBeChecked();
+  await page.getByRole("button", { name: "Guardar diseño" }).click();
+  const saved = page.getByRole("article", { name: "Tarjeta de muestra: Santa en nieve" });
+  await expect(saved).toBeVisible();
+  await page.getByRole("link", { name: "Elegir diseño" }).click();
+  await expect(page.getByRole("radio", { name: "Santa en nieve" })).toBeChecked();
+  await page.getByText("Jengibre", { exact: true }).click();
+  await expect(page.getByRole("radio", { name: "Jengibre" })).toBeChecked();
+  await page.getByRole("link", { name: "Volver sin guardar" }).click();
+  await expect(saved).toBeVisible();
   await page.reload();
-  await expect(initial).toBeChecked();
-  await expect(page.getByRole("article", { name: designs[0] })).toBeVisible();
+  await expect(page.getByRole("article", { name: "Tarjeta de muestra: Regalo polar" })).toBeVisible();
 });
