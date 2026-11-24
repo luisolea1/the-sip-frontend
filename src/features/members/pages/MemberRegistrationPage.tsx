@@ -10,8 +10,8 @@ export default function MemberRegistrationPage() {
       <div className="grid items-start gap-5 md:grid-cols-2">
         <section className="app-area-content-panel">
           <h2>Tu registro</h2>
-          <p>Vista previa. El registro se habilitará cuando esté conectado al servidor.</p>
-          <fieldset disabled className="grid gap-3">
+          <p>Puedes probar los campos. Los datos no se envían ni se guardan.</p>
+          <fieldset className="grid gap-3">
             <legend className="sr-only">Datos del miembro</legend>
             <label htmlFor="member-name">Nombre</label>
             <Input id="member-name" autoComplete="given-name" placeholder="Tu nombre" />
