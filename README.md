@@ -7,7 +7,7 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 **Alcance del piloto:** una sucursal, un iPad y operación exclusivamente con internet.  
 **Objetivo de costo:** utilizar herramientas sin costo de licencia y mantener los servicios dentro de sus planes gratuitos.
 
-### Índice
+**Índice**
 
 1. [Alcance](#1-alcance)
 2. [Áreas y accesos](#2-áreas-y-accesos)
@@ -42,7 +42,7 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o dueño autorizado |
 | Administración | `/dueno` | Dueño |
 
-Se implementará una sola aplicación con un despliegue compartido. Cada área tendrá sus propias pantallas y responsabilidades. Los componentes visuales y el cliente de la API serán compartidos.
+La base local incluye las cuatro rutas y navegación entre sus vistas iniciales. El registro es una vista previa; las rutas privadas solo muestran información de acceso. Todavía no se exponen tarjetas, ventas ni datos del negocio.
 
 La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
 
@@ -213,7 +213,7 @@ the-sip-frontend/
         └── types/
 ```
 
-La estructura describe la implementación futura. El alojamiento deberá permitir abrir y recargar las rutas de React Router directamente.
+El esquema incluye piezas actuales y previstas. El alojamiento deberá devolver `index.html` al abrir o recargar directamente las rutas de React Router.
 
 ## 8. Servicios y presupuesto
 
