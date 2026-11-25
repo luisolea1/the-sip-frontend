@@ -32,9 +32,9 @@ export function AppRoutes() {
             <Route path={paths.memberCard} element={<MemberCardPage />} />
             <Route path={paths.memberCardDesigns} element={<MemberCardDesignPage />} />
           </Route>
-          <Route element={<StaffSession />}>
+           <Route element={<StaffSession />}>
+            <Route path={paths.sale} element={<SalePage />} />
             <Route element={<StaffLayout area="pos" />}>
-              <Route path={paths.sale} element={<SalePage />} />
               <Route path={paths.posMembers} element={<PosMembersPage />} />
               <Route path={paths.shift} element={<ShiftPage />} />
             </Route>

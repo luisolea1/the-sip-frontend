@@ -5,7 +5,7 @@ import { packaging } from "../packaging";
 import { PaymentPreview } from "./PaymentPreview";
 import { TicketMember } from "./TicketMember";
 
-export function TicketPanel({ total }: { total: number }) {
+export function TicketPanel({ paymentNote }: { paymentNote: string }) {
   const { state, dispatch } = useStaffSession();
   const { lines } = state.draft;
   return (
@@ -42,14 +42,10 @@ export function TicketPanel({ total }: { total: number }) {
             {takeaway > 0 && <p>Empaque: {packaging[product.packageId].name} × {takeaway}</p>}
           </li>)}
         </ul>}
-      <p className="flex justify-between border-t border-border pt-4 text-lg font-bold" aria-live="polite">
-        Total <span>{formatMoney(total)}</span>
-      </p>
       {lines.length > 0 && <>
-        <PaymentPreview total={total} />
+        <PaymentPreview note={paymentNote} />
         <button type="button" className="pos-category-button justify-self-start" onClick={() => dispatch({ type: "clear" })}>Vaciar ticket</button>
       </>}
-      <p role="status">{state.notice}</p>
     </section>
   );
 }

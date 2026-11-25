@@ -20,9 +20,10 @@ test("una venta mixta aplica empaques y sellos una sola vez al confirmar", async
   await expect(page.getByText("36 pzas.")).toBeVisible();
   await nav.getByRole("link", { name: "Venta" }).click();
   await expect(ticket).toContainText("Parte en tarjeta: $72.00");
-  await ticket.getByRole("button", { name: "Confirmar venta simulada" }).click();
-  await expect(ticket).toContainText("Venta simulada 0059 confirmada");
-  await expect(ticket.getByRole("button", { name: "Confirmar venta simulada" })).toHaveCount(0);
+  const checkout = page.getByRole("region", { name: "Resumen de cobro" });
+  await checkout.getByRole("button", { name: "Confirmar venta simulada" }).click();
+  await expect(checkout).toContainText("Venta simulada 0059 confirmada");
+  await expect(checkout.getByRole("button", { name: "Confirmar venta simulada" })).toHaveCount(0);
   await nav.getByRole("link", { name: "Caja" }).click();
   await expect(page.getByText("84 pzas.")).toBeVisible();
   await expect(page.getByText("35 pzas.")).toBeVisible();
@@ -70,7 +71,7 @@ test("el corte concilia entradas y retiros y el siguiente turno empieza con su p
   await page.getByRole("link", { name: "Venta", exact: true }).click();
   await page.getByRole("button", { name: /Añadir Latte, Chico/ }).click();
   await page.getByLabel("Efectivo recibido").fill("65");
-  await expect(page.getByRole("button", { name: "Confirmar venta simulada" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Confirmar venta simulada" })).toHaveCount(0);
   await page.getByRole("link", { name: "Abrir turno" }).click();
   await page.getByRole("button", { name: "Abrir nuevo turno" }).click();
   await page.getByLabel("Fondo inicial").fill("300");
@@ -93,13 +94,15 @@ test("el ticket suma cantidades y calcula el cambio sin conservar la venta", asy
   const ticketBox = (await ticket.boundingBox())!;
   if (width < 832) {
     expect(ticketBox.y).toBeGreaterThanOrEqual(menuBox.y + menuBox.height);
-    await page.getByRole("link", { name: "Ver ticket" }).click();
-    await expect(ticket).toBeInViewport();
   } else {
     expect(ticketBox.x).toBeGreaterThanOrEqual(menuBox.x + menuBox.width);
-    await expect(page.getByRole("link", { name: "Ver ticket" })).toBeHidden();
   }
   await ticket.getByRole("button", { name: /Añadir una unidad de Latte/ }).click();
+  const pay = page.getByRole("link", { name: "Ir al pago" });
+  await expect(pay).toBeInViewport({ ratio: 1 });
+  await pay.focus();
+  await page.keyboard.press("Enter");
+  await expect(ticket.getByLabel("Efectivo recibido")).toBeFocused();
   await ticket.getByLabel("Efectivo recibido").fill("200");
   await expect(ticket.getByText("Cambio: $28.00")).toBeVisible();
   await ticket.getByLabel("Mixto").check();

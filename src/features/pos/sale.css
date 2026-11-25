@@ -1,7 +1,17 @@
 @reference "../../shared/styles/globals.css";
 
+.pos-sale-workspace {
+  display: grid;
+  height: 100dvh;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+.pos-sale-scroll {
+  overflow-y: auto;
+  scroll-padding-block: 1rem;
+}
 .pos-sale-layout {
-  @apply grid min-w-0 items-start gap-6 pb-20;
+  @apply grid min-w-0 items-start gap-6;
 }
 .pos-product-grid {
   display: grid;
@@ -17,15 +27,13 @@
 .pos-quantity-button {
   @apply grid size-11 cursor-pointer place-items-center rounded-xl border border-border hover:bg-muted;
 }
-.pos-mobile-ticket-bar {
-  @apply fixed inset-x-0 bottom-0 z-10 flex flex-wrap items-center justify-between gap-2 border-t border-border bg-white px-4 py-2 shadow-sm;
+.pos-checkout-summary {
+  @apply flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border bg-white px-4 py-2 sm:px-6 lg:px-8;
   padding-bottom: max(.5rem, env(safe-area-inset-bottom));
 }
 @media (min-width: 52rem) {
   .pos-sale-layout {
     grid-template-columns: minmax(0, 2fr) minmax(19rem, 1fr);
-    padding-bottom: 0;
   }
-  .pos-mobile-ticket-bar { display: none; }
   #pos-ticket { position: sticky; top: 1rem; }
 }

@@ -1,13 +1,10 @@
 import { Input } from "@/shared/components/ui/input";
-import { emptyPayment, methods, quotePayment } from "../payment";
-import { currentTime, useStaffSession } from "../StaffSession";
-import { Link } from "react-router";
-import { paths } from "@/app/paths";
+import { emptyPayment, methods } from "../payment";
+import { useStaffSession } from "../StaffSession";
 
-export function PaymentPreview({ total }: { total: number }) {
+export function PaymentPreview({ note }: { note: string }) {
   const { state, dispatch } = useStaffSession();
   const { payment } = state.draft;
-  const quote = quotePayment(payment, total);
   return (
     <fieldset className="grid min-w-0 gap-3 border-t border-border pt-3">
       <legend className="pr-2 font-semibold">Medio de pago</legend>
@@ -22,13 +19,11 @@ export function PaymentPreview({ total }: { total: number }) {
         <Input id="pos-cash" type="number" inputMode="decimal" min="0" step="0.01" placeholder="0.00"
           value={payment.amount} onChange={event => dispatch({ type: "payment", payment: { ...payment, amount: event.target.value } })} />
       </>}
-      <output className="rounded-xl bg-muted p-3">{quote.note}</output>
+      <output className="rounded-xl bg-muted p-3">{note}</output>
       {payment.method !== "Efectivo" && <label>Voucher de ejemplo
-        <Input value={payment.voucher} onChange={event => dispatch({ type: "payment", payment: { ...payment, voucher: event.target.value } })} />
+        <Input id="pos-voucher" value={payment.voucher} onChange={event => dispatch({ type: "payment", payment: { ...payment, voucher: event.target.value } })} />
       </label>}
-      {state.shift.close && <p>La caja está cerrada. <Link to={paths.shift}>Abrir turno</Link></p>}
-      <button type="button" className="staff-primary-button" disabled={!!state.shift.close || !quote.valid || (payment.method !== "Efectivo" && !payment.voucher.trim())}
-        onClick={() => dispatch({ type: "confirm", time: currentTime() })}>Confirmar venta simulada</button>
+      {state.shift.close && <p>La caja está cerrada.</p>}
     </fieldset>
   );
 }
