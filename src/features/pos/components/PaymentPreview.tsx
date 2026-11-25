@@ -1,6 +1,8 @@
 import { Input } from "@/shared/components/ui/input";
 import { emptyPayment, methods, quotePayment } from "../payment";
 import { currentTime, useStaffSession } from "../StaffSession";
+import { Link } from "react-router";
+import { paths } from "@/app/paths";
 
 export function PaymentPreview({ total }: { total: number }) {
   const { state, dispatch } = useStaffSession();
@@ -24,7 +26,8 @@ export function PaymentPreview({ total }: { total: number }) {
       {payment.method !== "Efectivo" && <label>Voucher de ejemplo
         <Input value={payment.voucher} onChange={event => dispatch({ type: "payment", payment: { ...payment, voucher: event.target.value } })} />
       </label>}
-      <button type="button" className="staff-primary-button" disabled={!quote.valid || (payment.method !== "Efectivo" && !payment.voucher.trim())}
+      {state.shift.close && <p>La caja está cerrada. <Link to={paths.shift}>Abrir turno</Link></p>}
+      <button type="button" className="staff-primary-button" disabled={!!state.shift.close || !quote.valid || (payment.method !== "Efectivo" && !payment.voucher.trim())}
         onClick={() => dispatch({ type: "confirm", time: currentTime() })}>Confirmar venta simulada</button>
     </fieldset>
   );

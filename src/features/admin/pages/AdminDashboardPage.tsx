@@ -8,9 +8,9 @@ import { salesByDay } from "../preview-data";
 import "../dashboard.css";
 
 export default function AdminDashboardPage() {
-  const [day, setDay] = useState<keyof typeof salesByDay>("today");
+  const [day, setDay] = useState<"today" | "yesterday">("today");
   const { state } = useStaffSession();
-  const sales = day === "today" ? [...state.sales, ...salesByDay.today] : salesByDay.yesterday;
+  const sales = day === "today" ? state.sales : salesByDay.yesterday;
   const total = sales.reduce((sum, sale) => sum + sale.total, 0);
   const metrics = [
     { label: "Ventas del día", value: formatMoney(total) },

@@ -1,10 +1,11 @@
-import { Store, UsersRound } from "lucide-react";
+import { Store, UsersRound, Wallet } from "lucide-react";
 import { NavLink } from "react-router";
 import { paths } from "@/app/paths";
 
 const tabs = [
   { to: paths.sale, label: "Venta", icon: Store },
   { to: paths.posMembers, label: "Miembros", icon: UsersRound },
+  { to: paths.shift, label: "Caja", icon: Wallet },
 ];
 
 export function PosNavigation() {

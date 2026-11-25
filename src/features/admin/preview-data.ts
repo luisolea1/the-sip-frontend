@@ -1,10 +1,4 @@
 export const salesByDay = {
-  today: [
-    { ticket: "0058", time: "12:42", method: "Tarjeta", total: 14000 },
-    { ticket: "0057", time: "12:35", method: "Efectivo", total: 8700 },
-    { ticket: "0056", time: "12:28", method: "Mixto", total: 11000 },
-    { ticket: "0055", time: "12:16", method: "Efectivo", total: 6500 },
-  ],
   yesterday: [
     { ticket: "0054", time: "17:24", method: "Tarjeta", total: 7500 },
     { ticket: "0053", time: "17:08", method: "Efectivo", total: 13000 },
