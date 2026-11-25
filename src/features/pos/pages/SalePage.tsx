@@ -1,4 +1,3 @@
-import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
 import { StaffLayout } from "@/app/StaffLayout";
 import { CheckoutSummary } from "../components/CheckoutSummary";
 import { useStaffSession } from "../StaffSession";
@@ -14,7 +13,12 @@ export default function SalePage() {
   const quote = quotePayment(state.draft.payment, total);
 
   return <StaffLayout area="pos" footer={<CheckoutSummary total={total} amountValid={quote.valid} />}>
-    <AreaIntroduction title="Punto de venta" description="Sucursal Centro · Arma un ticket de ejemplo. No se realizan cobros." />
+    <header className="pos-sale-heading">
+      <title>Punto de venta | THE SIP</title>
+      <h1>Punto de venta</h1>
+      <p className="font-semibold">Sucursal Centro</p>
+      <p className="text-sm">Venta de ejemplo · No se realizan cobros.</p>
+    </header>
     <div className="pos-sale-layout">
       <ProductCatalog onAdd={product => dispatch({ type: "quantity", product, delta: 1 })} />
       <TicketPanel paymentNote={quote.note} />

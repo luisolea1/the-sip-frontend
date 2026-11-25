@@ -10,6 +10,21 @@
   overflow-y: auto;
   scroll-padding-block: 1rem;
 }
+.pos-sale-heading {
+  @apply flex flex-wrap items-baseline gap-x-4 gap-y-1;
+}
+.pos-sale-heading h1 {
+  @apply text-2xl sm:text-3xl;
+}
+.pos-sale-scroll main {
+  @apply gap-4 py-4;
+}
+.pos-catalog-tools {
+  @apply flex flex-wrap items-center gap-2;
+}
+.pos-catalog-tools label {
+  flex: 1 1 13rem;
+}
 .pos-sale-layout {
   @apply grid min-w-0 items-start gap-6;
 }

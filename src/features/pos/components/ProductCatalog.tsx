@@ -17,14 +17,16 @@ export function ProductCatalog({ onAdd }: { onAdd: (product: Product) => void })
   return (
     <section id="pos-catalog" aria-labelledby="pos-catalog-title" className="grid min-w-0 content-start gap-4">
       <h2 id="pos-catalog-title">Menú de productos</h2>
-      <label className="relative block">
-        <span className="sr-only">Buscar producto</span>
-        <Search aria-hidden="true" size={18} className="pointer-events-none absolute top-3.5 left-3" />
-        <Input type="search" placeholder="Buscar producto…" className="pl-10" value={query} onChange={event => setQuery(event.target.value)} />
-      </label>
-      <div role="group" aria-label="Categorías" className="flex flex-wrap gap-2">
-        {categories.map(item => <button type="button" key={item} aria-pressed={category === item}
-          className="pos-category-button" onClick={() => setCategory(item)}>{item}</button>)}
+      <div className="pos-catalog-tools">
+        <label className="relative block">
+          <span className="sr-only">Buscar producto</span>
+          <Search aria-hidden="true" size={18} className="pointer-events-none absolute top-3.5 left-3" />
+          <Input type="search" placeholder="Buscar producto…" className="pl-10" value={query} onChange={event => setQuery(event.target.value)} />
+        </label>
+        <div role="group" aria-label="Categorías" className="flex flex-wrap gap-2">
+          {categories.map(item => <button type="button" key={item} aria-pressed={category === item}
+            className="pos-category-button" onClick={() => setCategory(item)}>{item}</button>)}
+        </div>
       </div>
       <ul className="pos-product-grid">
         {visible.map(product => <li key={product.id}>
