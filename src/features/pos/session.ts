@@ -29,6 +29,10 @@ export function ticketTotal(lines: TicketLine[]) {
   return lines.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
 }
 
+export function nextTicketNumber(sales: Sale[]) {
+  return String(Number(sales[0]?.ticket ?? 0) + 1).padStart(4, "0");
+}
+
 export function availablePackages(sales: Sale[], id: PackageId) {
   return sales.reduce((stock, sale) => stock - sale.lines.reduce((used, line) =>
     used + (line.product.packageId === id ? line.takeaway : 0), 0), packaging[id].stock);
@@ -76,7 +80,7 @@ export function sessionReducer(state: Session, action: Action): Session {
       const voucher = cash < total ? draft.payment.voucher.trim() : "";
       if (cash < total && !voucher) return state;
       if (voucher && sales.some(sale => sale.voucher === voucher)) return { ...state, notice: "Ese voucher ya se usó en otra venta simulada." };
-      const ticket = String(Number(sales[0].ticket) + 1).padStart(4, "0");
+      const ticket = nextTicketNumber(sales);
       const sale = { ticket, time: action.time, method: draft.payment.method, total, cash, voucher, lines: draft.lines, memberNumber: draft.memberNumber };
       const stamps = draft.lines.reduce((count, line) => count + (line.product.category === "Bebidas" ? line.quantity : 0), 0);
       const members = state.members.map(member => member.number === draft.memberNumber ? { ...member, stamps: member.stamps + stamps } : member);

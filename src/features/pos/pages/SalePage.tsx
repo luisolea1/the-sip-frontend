@@ -1,8 +1,8 @@
 import { StaffLayout } from "@/app/StaffLayout";
-import { CheckoutSummary } from "../components/CheckoutSummary";
+import { useEffect, useRef, useState } from "react";
+import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
 import { ticketTotal } from "../session";
-import { quotePayment } from "../payment";
 import { ProductCatalog } from "../components/ProductCatalog";
 import { TicketPanel } from "../components/TicketPanel";
 import "../sale.css";
@@ -10,9 +10,21 @@ import "../sale.css";
 export default function SalePage() {
   const { state, dispatch } = useStaffSession();
   const total = ticketTotal(state.draft.lines);
-  const quote = quotePayment(state.draft.payment, total);
+  const ticketRef = useRef<HTMLElement>(null);
+  const [ticketVisible, setTicketVisible] = useState(false);
+  useEffect(() => {
+    const ticket = ticketRef.current;
+    if (!ticket) return;
+    const observer = new IntersectionObserver(([entry]) => setTicketVisible(entry.isIntersecting), {
+      rootMargin: "0px 0px -50% 0px",
+    });
+    observer.observe(ticket);
+    return () => observer.disconnect();
+  }, []);
 
-  return <StaffLayout area="pos" footer={<CheckoutSummary total={total} amountValid={quote.valid} />}>
+  return <StaffLayout area="pos" footer={<div className="pos-ticket-shortcut" hidden={ticketVisible}>
+    <strong>Total · {formatMoney(total)}</strong><a href="#pos-ticket" className="staff-secondary-button">Ver compra</a>
+  </div>}>
     <header className="pos-sale-heading">
       <title>Punto de venta | THE SIP</title>
       <h1>Punto de venta</h1>
@@ -21,7 +33,7 @@ export default function SalePage() {
     </header>
     <div className="pos-sale-layout">
       <ProductCatalog onAdd={product => dispatch({ type: "quantity", product, delta: 1 })} />
-      <TicketPanel paymentNote={quote.note} />
+      <TicketPanel ref={ticketRef} total={total} />
     </div>
   </StaffLayout>;
 }

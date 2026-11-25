@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("una venta mixta aplica empaques y sellos una sola vez al confirmar", async ({ page }) => {
   await page.goto("/caja/venta");
   const nav = page.getByRole("navigation", { name: "Operación de caja" });
-  const ticket = page.getByRole("region", { name: "Ticket actual" });
+  const ticket = page.getByRole("region", { name: "Tu compra" });
   await page.getByRole("button", { name: /Añadir Latte, Chico/ }).click({ clickCount: 2 });
   await page.getByRole("button", { name: /Añadir Muffin/ }).click();
   await ticket.getByRole("button", { name: "Para llevar" }).first().click();
@@ -12,7 +12,7 @@ test("una venta mixta aplica empaques y sellos una sola vez al confirmar", async
   await ticket.getByLabel("Parte en efectivo").fill("100");
   await ticket.getByLabel("Voucher de ejemplo").fill("00123");
   await expect(ticket.getByRole("link", { name: "Buscar miembro" })).toBeHidden();
-  await ticket.getByText("Añadir miembro", { exact: true }).press("Enter");
+  await ticket.locator("summary").press("Enter");
   await ticket.getByRole("link", { name: "Simular escaneo de QR" }).click();
   await expect(page.getByRole("region", { name: "Tarjeta seleccionada" })).toContainText("01725");
   await page.getByRole("button", { name: "Usar en esta venta" }).click();
@@ -25,6 +25,7 @@ test("una venta mixta aplica empaques y sellos una sola vez al confirmar", async
   const checkout = page.getByRole("region", { name: "Resumen de cobro" });
   await checkout.getByRole("button", { name: "Confirmar venta simulada" }).click();
   await expect(checkout).toContainText("Venta simulada 0059 confirmada");
+  await expect(ticket).toContainText("Orden #0060");
   await expect(checkout.getByRole("button", { name: "Confirmar venta simulada" })).toHaveCount(0);
   await nav.getByRole("link", { name: "Caja" }).click();
   await expect(page.getByText("84 pzas.")).toBeVisible();
@@ -85,13 +86,21 @@ test("el corte concilia entradas y retiros y el siguiente turno empieza con su p
 test("el ticket suma cantidades y calcula el cambio sin conservar la venta", async ({ page }) => {
   await page.goto("/caja/venta");
   const catalog = page.getByRole("region", { name: "Menú de productos" });
-  const ticket = page.getByRole("region", { name: "Ticket actual" });
+  const ticket = page.getByRole("region", { name: "Tu compra" });
+  await expect(ticket.getByRole("button", { name: "Vaciar ticket" })).toBeDisabled();
+  await expect(ticket.getByRole("button", { name: "Cobrar $0.00" })).toBeDisabled();
+  const width = page.viewportSize()!.width;
+  const shortcut = page.getByRole("link", { name: "Ver compra" });
+  if (width < 832) {
+    await shortcut.click();
+    await expect(ticket).toBeInViewport();
+  }
+  await expect(shortcut).toBeHidden();
   await catalog.getByRole("button", { name: /Añadir Latte, Chico/ }).click();
   await catalog.getByRole("button", { name: "Panadería" }).click();
   await expect(catalog.getByRole("button", { name: /Añadir Latte/ })).toHaveCount(0);
   await catalog.getByRole("button", { name: /Añadir Muffin/ }).click();
 
-  const width = page.viewportSize()!.width;
   const menuBox = (await catalog.boundingBox())!;
   const ticketBox = (await ticket.boundingBox())!;
   if (width < 832) {
@@ -100,8 +109,8 @@ test("el ticket suma cantidades y calcula el cambio sin conservar la venta", asy
     expect(ticketBox.x).toBeGreaterThanOrEqual(menuBox.x + menuBox.width);
   }
   await ticket.getByRole("button", { name: /Añadir una unidad de Latte/ }).click();
-  const pay = page.getByRole("link", { name: "Ir al pago" });
-  await expect(pay).toBeInViewport({ ratio: 1 });
+  const pay = ticket.getByRole("link", { name: "Cobrar $172.00" });
+  if (width >= 832) await expect(pay).toBeInViewport({ ratio: 1 });
   await pay.focus();
   await page.keyboard.press("Enter");
   await expect(ticket.getByLabel("Efectivo recibido")).toBeFocused();
@@ -114,7 +123,7 @@ test("el ticket suma cantidades y calcula el cambio sin conservar la venta", asy
   await expect(ticket.getByText("Parte en tarjeta: $30.00")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   await page.reload();
-  await expect(ticket.getByText("Añade un producto del menú para empezar.")).toBeVisible();
+  await expect(ticket.getByText("Aquí empieza tu próxima compra.")).toBeVisible();
 });
 
 test("el resumen y las compras reflejan sus filtros solo hasta recargar", async ({ page }) => {

@@ -1,20 +1,29 @@
-import { Minus, Plus, ShoppingBag } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import type { Ref } from "react";
 import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
 import { packaging } from "../packaging";
+import { nextTicketNumber } from "../session";
+import { quotePayment } from "../payment";
+import { CheckoutSummary } from "./CheckoutSummary";
 import { PaymentPreview } from "./PaymentPreview";
 import { TicketMember } from "./TicketMember";
 
-export function TicketPanel({ paymentNote }: { paymentNote: string }) {
+export function TicketPanel({ total, ref }: { total: number; ref: Ref<HTMLElement> }) {
   const { state, dispatch } = useStaffSession();
   const { lines } = state.draft;
+  const quote = quotePayment(state.draft.payment, total);
   return (
-    <section id="pos-ticket" aria-labelledby="pos-ticket-title" tabIndex={-1} className="staff-workspace-panel grid content-start gap-4">
-      <header className="flex items-center gap-2 text-primary">
-        <ShoppingBag size={20} aria-hidden="true" /><h2 id="pos-ticket-title">Ticket actual</h2>
+    <section ref={ref} id="pos-ticket" aria-labelledby="pos-ticket-title" tabIndex={-1} className="pos-ticket-panel">
+      <header className="flex items-center justify-between gap-3">
+        <div><h2 id="pos-ticket-title">Tu compra</h2><p className="text-sm text-muted-foreground">Orden #{nextTicketNumber(state.sales)}</p></div>
+        <button type="button" className="pos-ticket-clear" aria-label="Vaciar ticket" title="Vaciar ticket" disabled={!lines.length}
+          onClick={() => dispatch({ type: "clear" })}><Trash2 size={17} aria-hidden="true" /></button>
       </header>
-      <TicketMember />
-      {lines.length === 0 ? <p className="rounded-xl bg-muted p-4">Añade un producto del menú para empezar.</p> :
+      <div className="pos-ticket-body">
+        <p className="text-sm text-muted-foreground">Marca los productos que sean para llevar.</p>
+        <TicketMember />
+        {lines.length === 0 ? <p className="pos-ticket-empty"><ShoppingBag size={18} aria-hidden="true" /><span>Aquí empieza<br /> tu próxima compra.</span></p> :
         <ul className="divide-y divide-border">
           {lines.map(({ product, quantity, takeaway }) => <li key={product.id} className="grid gap-2 py-2">
             <p><strong>{product.name}</strong> · {product.size}</p>
@@ -42,10 +51,9 @@ export function TicketPanel({ paymentNote }: { paymentNote: string }) {
             {takeaway > 0 && <p>Empaque: {packaging[product.packageId].name} × {takeaway}</p>}
           </li>)}
         </ul>}
-      {lines.length > 0 && <>
-        <PaymentPreview note={paymentNote} />
-        <button type="button" className="pos-category-button justify-self-start" onClick={() => dispatch({ type: "clear" })}>Vaciar ticket</button>
-      </>}
+        {lines.length > 0 && <PaymentPreview note={quote.note} />}
+      </div>
+      <CheckoutSummary total={total} amountValid={quote.valid} />
     </section>
   );
 }
