@@ -3,6 +3,7 @@ import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
 import { packaging } from "../packaging";
 import { PaymentPreview } from "./PaymentPreview";
+import { TicketMember } from "./TicketMember";
 
 export function TicketPanel({ total }: { total: number }) {
   const { state, dispatch } = useStaffSession();
@@ -12,6 +13,7 @@ export function TicketPanel({ total }: { total: number }) {
       <header className="flex items-center gap-2 text-primary">
         <ShoppingBag size={20} aria-hidden="true" /><h2 id="pos-ticket-title">Ticket actual</h2>
       </header>
+      <TicketMember />
       {lines.length === 0 ? <p className="rounded-xl bg-muted p-4">Añade un producto del menú para empezar.</p> :
         <ul className="divide-y divide-border">
           {lines.map(({ product, quantity, takeaway }) => <li key={product.id} className="grid gap-2 py-2">

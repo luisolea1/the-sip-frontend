@@ -1,5 +1,6 @@
 import { LayoutDashboard, Store } from "lucide-react";
 import { Outlet } from "react-router";
+import { PosNavigation } from "@/features/pos/components/PosNavigation";
 
 export function StaffLayout({ area }: { area: "pos" | "admin" }) {
   const isSale = area === "pos";
@@ -14,6 +15,7 @@ export function StaffLayout({ area }: { area: "pos" | "admin" }) {
         </span>
         <span className="ml-auto rounded-full border border-white/40 px-3 py-1 text-xs font-semibold">Vista previa</span>
       </header>
+      {isSale && <PosNavigation />}
       <main id="staff-content" tabIndex={-1} className="grid min-w-0 gap-6 p-4 sm:p-6 lg:p-8">
         <Outlet />
       </main>

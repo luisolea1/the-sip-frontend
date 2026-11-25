@@ -11,6 +11,7 @@ const MemberCardPage = lazy(() => import("@/features/members/pages/MemberCardPag
 const MemberCardLayout = lazy(() => import("@/features/members/components/MemberCardLayout"));
 const MemberCardDesignPage = lazy(() => import("@/features/members/pages/MemberCardDesignPage"));
 const SalePage = lazy(() => import("@/features/pos/pages/SalePage"));
+const PosMembersPage = lazy(() => import("@/features/pos/pages/PosMembersPage"));
 const AdminDashboardPage = lazy(() => import("@/features/admin/pages/AdminDashboardPage"));
 
 export function AppRoutes() {
@@ -32,7 +33,8 @@ export function AppRoutes() {
           </Route>
           <Route element={<StaffSession />}>
           <Route element={<StaffLayout area="pos" />}>
-            <Route path={paths.sale} element={<SalePage />} />
+             <Route path={paths.sale} element={<SalePage />} />
+            <Route path={paths.posMembers} element={<PosMembersPage />} />
           </Route>
           <Route element={<StaffLayout area="admin" />}>
             <Route path={paths.admin} element={<AdminDashboardPage />} />
