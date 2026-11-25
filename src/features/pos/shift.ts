@@ -1,14 +1,15 @@
 import type { Sale } from "./session";
 
-export const cashier = "Ana López";
+const sampleCashier = "Ana López";
 export type Movement = { kind: "entry" | "withdrawal"; amount: number; reason: string; time: string; operator: string };
 export type Shift = {
+  cashier: string;
   opened: string; opening: number; previousSales: number; movements: Movement[];
   close: { counted: number; time: string } | null;
 };
 
-export function newShift(opening: number, opened: string, previousSales: number): Shift {
-  return { opening, opened, previousSales, movements: [], close: null };
+export function newShift(opening: number, opened: string, previousSales: number, cashier: string): Shift {
+  return { opening, opened, previousSales, cashier, movements: [], close: null };
 }
 
 export const sampleSales: Sale[] = [
@@ -19,10 +20,10 @@ export const sampleSales: Sale[] = [
 ];
 
 export const sampleShift: Shift = {
-  ...newShift(50000, "08:00", 0),
+  ...newShift(50000, "08:00", 0, sampleCashier),
   movements: [
-    { kind: "withdrawal", amount: 40000, time: "12:30", reason: "Retiro a resguardo", operator: cashier },
-    { kind: "entry", amount: 20000, time: "10:15", reason: "Fondo adicional", operator: cashier },
+    { kind: "withdrawal", amount: 40000, time: "12:30", reason: "Retiro a resguardo", operator: sampleCashier },
+    { kind: "entry", amount: 20000, time: "10:15", reason: "Fondo adicional", operator: sampleCashier },
   ],
 };
 

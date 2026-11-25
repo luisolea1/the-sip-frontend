@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import { Outlet } from "react-router";
 import { PosNavigation } from "@/features/pos/components/PosNavigation";
 
-type StaffLayoutProps = { area: "pos" | "admin"; children?: ReactNode; footer?: ReactNode };
+type StaffLayoutProps = { area: "pos" | "admin"; children?: ReactNode; footer?: ReactNode; showPreviewBadge?: boolean };
 
-export function StaffLayout({ area, children, footer }: StaffLayoutProps) {
+export function StaffLayout({ area, children, footer, showPreviewBadge = true }: StaffLayoutProps) {
   const isSale = area === "pos";
   const Icon = isSale ? Store : LayoutDashboard;
   const content = <>
@@ -15,7 +15,7 @@ export function StaffLayout({ area, children, footer }: StaffLayoutProps) {
         <span className="flex items-center gap-2 border-l border-white/40 pl-4">
           <Icon aria-hidden="true" size={18} /> {isSale ? "Caja" : "Administración"}
         </span>
-        <span className="ml-auto rounded-full border border-white/40 px-3 py-1 text-xs font-semibold">Vista previa</span>
+        {showPreviewBadge && <span className="ml-auto rounded-full border border-white/40 px-3 py-1 text-xs font-semibold">Vista previa</span>}
       </header>
       {isSale && <PosNavigation />}
       <main id="staff-content" tabIndex={-1} className="grid min-w-0 gap-6 p-4 sm:p-6 lg:p-8">

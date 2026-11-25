@@ -3,7 +3,7 @@ import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
 import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
 import { ShiftForm, type ShiftOperation } from "../components/ShiftForm";
-import { cashier, shiftSummary } from "../shift";
+import { shiftSummary } from "../shift";
 import { packaging, type PackageId } from "../packaging";
 import { availablePackages } from "../session";
 
@@ -24,7 +24,7 @@ export default function ShiftPage() {
       <div className="grid min-w-0 gap-4">
         <section className="staff-workspace-panel grid gap-3">
           <h2>{shift.close ? "Caja cerrada" : "Caja abierta"}</h2>
-          <p>{cashier} · Apertura {shift.opened}</p>
+          <p>{shift.cashier} · Apertura {shift.opened}</p>
           {shift.close && <dl>
             <Detail label="Hora de corte" value={shift.close.time} />
             <Detail label="Efectivo contado" value={formatMoney(shift.close.counted)} />
@@ -72,7 +72,7 @@ export default function ShiftPage() {
               </div>
               <p>{movement.kind === "entry" ? "Entrada" : "Retiro"} · {movement.time} · {movement.operator}</p>
             </li>)}
-            <li className="py-2"><strong>Apertura de caja · {formatMoney(shift.opening)}</strong><p>{shift.opened} · {cashier}</p></li>
+            <li className="py-2"><strong>Apertura de caja · {formatMoney(shift.opening)}</strong><p>{shift.opened} · {shift.cashier}</p></li>
           </ol>
         </section>
         <section className="staff-workspace-panel">

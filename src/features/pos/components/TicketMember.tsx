@@ -16,7 +16,7 @@ export function TicketMember() {
   return <details className="pos-ticket-member group">
     <summary className="flex min-h-11 cursor-pointer items-center gap-2">
       <ScanLine size={17} aria-hidden="true" className="shrink-0" />
-      <span className="grid gap-1"><strong>Agregar miembro</strong><span className="text-xs text-muted-foreground">Busca al miembro o escanea su tarjeta.</span></span>
+      <span className="grid gap-1"><strong>Agregar miembro</strong><span className="text-xs text-muted-foreground">Escanea su tarjeta de fidelidad.</span></span>
       <ChevronDown size={16} aria-hidden="true" className="ml-auto group-open:rotate-180" />
     </summary>
     <div className="grid gap-2 pt-2">

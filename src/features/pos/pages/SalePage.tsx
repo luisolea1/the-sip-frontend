@@ -10,6 +10,7 @@ import "../sale.css";
 export default function SalePage() {
   const { state, dispatch } = useStaffSession();
   const total = ticketTotal(state.draft.lines);
+  const firstName = state.shift.cashier.trim().split(/\s+/)[0];
   const ticketRef = useRef<HTMLElement>(null);
   const [ticketVisible, setTicketVisible] = useState(false);
   useEffect(() => {
@@ -22,14 +23,13 @@ export default function SalePage() {
     return () => observer.disconnect();
   }, []);
 
-  return <StaffLayout area="pos" footer={<div className="pos-ticket-shortcut" hidden={ticketVisible}>
+  return <StaffLayout area="pos" showPreviewBadge={false} footer={<div className="pos-ticket-shortcut" hidden={ticketVisible}>
     <strong>Total · {formatMoney(total)}</strong><a href="#pos-ticket" className="staff-secondary-button">Ver compra</a>
   </div>}>
     <header className="pos-sale-heading">
       <title>Punto de venta | THE SIP</title>
-      <h1>Punto de venta</h1>
-      <p className="font-semibold">Sucursal Centro</p>
-      <p className="text-sm">Venta de ejemplo · No se realizan cobros.</p>
+      <h1>Hola, {firstName}.</h1>
+      <p className="text-sm text-muted-foreground">Un nuevo día, un buen café.</p>
     </header>
     <div className="pos-sale-layout">
       <ProductCatalog onAdd={product => dispatch({ type: "quantity", product, delta: 1 })} />

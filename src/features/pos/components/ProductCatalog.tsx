@@ -2,10 +2,10 @@ import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/shared/components/ui/input";
 import { formatMoney } from "@/shared/utils/format-money";
-import { products, type Product } from "../catalog";
+import { productCategories, products, type Product } from "../catalog";
 import { ProductIllustration } from "./ProductIllustration";
 
-const categories = ["Todo", "Bebidas", "Panadería"] as const;
+const categories = ["Todo", ...productCategories] as const;
 
 export function ProductCatalog({ onAdd }: { onAdd: (product: Product) => void }) {
   const [category, setCategory] = useState<(typeof categories)[number]>("Todo");
@@ -16,12 +16,15 @@ export function ProductCatalog({ onAdd }: { onAdd: (product: Product) => void })
   );
   return (
     <section id="pos-catalog" aria-labelledby="pos-catalog-title" className="grid min-w-0 content-start gap-4">
-      <h2 id="pos-catalog-title">Menú de productos</h2>
+      <header className="grid gap-1">
+        <h2 id="pos-catalog-title">¿Qué preparamos hoy?</h2>
+        <p className="text-sm text-muted-foreground">Elige algo del menú para empezar.</p>
+      </header>
       <div className="pos-catalog-tools">
         <label className="relative block">
-          <span className="sr-only">Buscar producto</span>
+          <span className="sr-only">Buscar en el menú</span>
           <Search aria-hidden="true" size={18} className="pointer-events-none absolute top-3.5 left-3" />
-          <Input type="search" placeholder="Buscar producto…" className="pl-10" value={query} onChange={event => setQuery(event.target.value)} />
+          <Input type="search" placeholder="Buscar en el menú" className="pl-10" value={query} onChange={event => setQuery(event.target.value)} />
         </label>
         <div role="group" aria-label="Categorías" className="flex flex-wrap gap-2">
           {categories.map(item => <button type="button" key={item} aria-pressed={category === item}

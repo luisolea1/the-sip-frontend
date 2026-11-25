@@ -3,7 +3,6 @@ import { Input } from "@/shared/components/ui/input";
 import { formatMoney } from "@/shared/utils/format-money";
 import { currentTime, useStaffSession } from "../StaffSession";
 import { parseCents } from "../payment";
-import { cashier } from "../shift";
 
 const actions = {
   open: { title: "Abrir turno", label: "Fondo inicial" },
@@ -14,7 +13,7 @@ const actions = {
 export type ShiftOperation = keyof typeof actions;
 
 export function ShiftForm({ operation, expected, onDone }: { operation: ShiftOperation; expected: number; onDone: () => void }) {
-  const { dispatch } = useStaffSession();
+  const { state, dispatch } = useStaffSession();
   const [value, setValue] = useState("");
   const [reason, setReason] = useState("");
   const amount = parseCents(value);
@@ -27,7 +26,7 @@ export function ShiftForm({ operation, expected, onDone }: { operation: ShiftOpe
     const time = currentTime();
     if (operation === "open") dispatch({ type: "open", amount, time });
     else if (operation === "close") dispatch({ type: "close", counted: amount, time });
-    else dispatch({ type: "move", movement: { kind: operation, amount, time, reason: reason.trim(), operator: cashier } });
+    else dispatch({ type: "move", movement: { kind: operation, amount, time, reason: reason.trim(), operator: state.shift.cashier } });
     onDone();
   }
   return <form aria-label={title} className="grid gap-3 rounded-2xl border border-border p-4" onSubmit={submit}>

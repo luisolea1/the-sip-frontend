@@ -66,7 +66,7 @@ export function sessionReducer(state: Session, action: Action): Session {
       return { ...state, notice: "", draft: { ...draft, memberNumber: action.number } };
     case "open":
       if (!state.shift.close || action.amount < 0 || !Number.isSafeInteger(action.amount)) return state;
-      return { ...state, shift: newShift(action.amount, action.time, sales.length) };
+      return { ...state, shift: newShift(action.amount, action.time, sales.length, state.shift.cashier) };
     case "move":
       if (state.shift.close || action.movement.amount <= 0 || !Number.isSafeInteger(action.movement.amount) || !action.movement.reason.trim()) return state;
       return { ...state, shift: { ...state.shift, movements: [action.movement, ...state.shift.movements] } };
@@ -82,7 +82,7 @@ export function sessionReducer(state: Session, action: Action): Session {
       if (voucher && sales.some(sale => sale.voucher === voucher)) return { ...state, notice: "Ese voucher ya se usó en otra venta simulada." };
       const ticket = nextTicketNumber(sales);
       const sale = { ticket, time: action.time, method: draft.payment.method, total, cash, voucher, lines: draft.lines, memberNumber: draft.memberNumber };
-      const stamps = draft.lines.reduce((count, line) => count + (line.product.category === "Bebidas" ? line.quantity : 0), 0);
+      const stamps = draft.lines.reduce((count, line) => count + (line.product.category === "Alimentos" ? 0 : line.quantity), 0);
       const members = state.members.map(member => member.number === draft.memberNumber ? { ...member, stamps: member.stamps + stamps } : member);
       return { ...state, members, sales: [sale, ...sales], draft: emptyDraft, notice: `Venta simulada ${ticket} confirmada.` };
     }

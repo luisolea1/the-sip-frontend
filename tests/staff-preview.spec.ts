@@ -85,7 +85,7 @@ test("el corte concilia entradas y retiros y el siguiente turno empieza con su p
 
 test("el ticket suma cantidades y calcula el cambio sin conservar la venta", async ({ page }) => {
   await page.goto("/caja/venta");
-  const catalog = page.getByRole("region", { name: "Menú de productos" });
+  const catalog = page.getByRole("region", { name: "¿Qué preparamos hoy?" });
   const ticket = page.getByRole("region", { name: "Tu compra" });
   await expect(ticket.getByRole("button", { name: "Vaciar ticket" })).toBeDisabled();
   await expect(ticket.getByRole("button", { name: "Cobrar $0.00" })).toBeDisabled();
@@ -97,7 +97,13 @@ test("el ticket suma cantidades y calcula el cambio sin conservar la venta", asy
   }
   await expect(shortcut).toBeHidden();
   await catalog.getByRole("button", { name: /Añadir Latte, Chico/ }).click();
-  await catalog.getByRole("button", { name: "Panadería" }).click();
+  await catalog.getByRole("button", { name: "Café", exact: true }).click();
+  await expect(catalog.getByRole("button", { name: /Añadir Americano/ })).toBeVisible();
+  await expect(catalog.getByRole("button", { name: /Añadir Chai/ })).toHaveCount(0);
+  await catalog.getByRole("button", { name: "Bebidas", exact: true }).click();
+  await expect(catalog.getByRole("button", { name: /Añadir Chai/ })).toBeVisible();
+  await expect(catalog.getByRole("button", { name: /Añadir Latte/ })).toHaveCount(0);
+  await catalog.getByRole("button", { name: "Alimentos", exact: true }).click();
   await expect(catalog.getByRole("button", { name: /Añadir Latte/ })).toHaveCount(0);
   await catalog.getByRole("button", { name: /Añadir Muffin/ }).click();
 
