@@ -105,16 +105,6 @@
   .member-card-primary-button {
     @apply min-h-12 cursor-pointer rounded-2xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-[#550607];
   }
-  .app-area-content-panel {
-    @apply grid min-w-0 gap-4 rounded-xl border border-border bg-card p-5 sm:p-6;
-  }
-  .app-area-navigation-link {
-    @apply inline-flex min-h-11 items-center rounded-md px-3 text-primary-foreground no-underline;
-  }
-  .app-area-navigation-link:hover,
-  .app-area-navigation-link[aria-current="page"] { background-color: #ffffff26; }
-  .app-area-navigation-link[aria-current="page"] { text-decoration: underline; }
-  .app-area-navigation-link:focus-visible { outline-color: white; }
   .shared-form-text-input {
     @apply w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2.5 text-base;
   }

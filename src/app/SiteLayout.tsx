@@ -1,28 +1,15 @@
-import { NavLink, Outlet } from "react-router";
-import { paths } from "./paths";
-
-const memberNavigation = [
-  { to: paths.registration, label: "Registro" },
-  { to: paths.memberCard, label: "Mi tarjeta" },
-];
+import { Outlet } from "react-router";
 
 export function SiteLayout() {
   return (
-    <div className="members-area-theme min-h-screen bg-muted text-foreground">
+    <div className="members-area-theme mx-auto min-h-screen max-w-lg px-5 text-foreground sm:px-8">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:block">
         Saltar al contenido
       </a>
-      <header className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-8 px-4 py-3">
-          <span className="text-2xl font-bold tracking-wide">THE SIP</span>
-          <nav aria-label="Portal de miembros" className="flex flex-wrap gap-x-1">
-            {memberNavigation.map(({ to, label }) => (
-              <NavLink key={to} to={to} className="app-area-navigation-link">{label}</NavLink>
-            ))}
-          </nav>
-        </div>
+      <header className="border-b border-border py-4 sm:pt-8">
+        <span className="text-2xl font-bold tracking-wide text-primary">THE SIP</span>
       </header>
-      <main id="main-content" tabIndex={-1} className="mx-auto grid max-w-5xl gap-6 px-4 py-8 sm:py-12">
+      <main id="main-content" tabIndex={-1} className="grid gap-6 py-7 sm:gap-8 sm:py-10">
         <Outlet />
       </main>
     </div>
