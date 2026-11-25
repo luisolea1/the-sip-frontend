@@ -41,11 +41,18 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | Tarjeta de muestra | `/mi-tarjeta` | Público; las tarjetas reales requerirán sesión |
 | Selector de diseños | `/mi-tarjeta/disenos` | Público, sin registro |
 | Punto de venta | `/caja/venta` | Vista previa sin registro; en el piloto, cajero asignado o administrador autorizado |
+| Miembros en caja | `/caja/miembros` | Vista previa del cajero: búsqueda, alta y asociación al ticket |
+| Turno de caja | `/caja/turno` | Vista previa del cajero: apertura, movimientos y corte |
 | Administración | `/administrador` | Vista previa sin registro; en el piloto, administrador |
 
 El portal público incluye el registro, la tarjeta y su selector de diseños; el iPad del cajero abre directamente `/caja/venta`, y el administrador entra por `/administrador`. Comparten estilos, pero no un menú global.
 
-**Vista previa local:** en caja puedes armar un ticket y calcular el cambio o el reparto de un pago mixto. En administración puedes seleccionar el día del resumen y consultar los insumos que alcanzaron su mínimo. Todo usa datos de ejemplo: al recargar se restablecen el ticket y los filtros. Las simulaciones de caja no se cobran ni se agregan a las ventas del panel.
+**Vista previa local:** Venta, Miembros y Caja comparten el estado en memoria. Puedes cambiar de pestaña sin perder el ticket. Al recargar se recuperan los datos de ejemplo; no se envían ventas, movimientos ni registros de miembros a un servidor.
+
+- **Venta:** marca «Para llevar» y ajusta las unidades por producto. Confirmar la venta simulada descuenta un vaso de su tamaño por bebida marcada o una charola por alimento marcado; editar o vaciar el ticket no consume empaques. La parte en efectivo entra al cajón; la parte en tarjeta se registra por separado con un voucher ficticio único.
+- **Miembros:** busca por nombre o número, verifica la tarjeta y pulsa «Usar en esta venta». El escaneo simulado selecciona una tarjeta de ejemplo sin usar la cámara. Para visualizar la fidelidad, cada bebida confirmada suma un sello al miembro asociado; los alimentos no suman sellos. Esta regla ilustrativa no define las condiciones del piloto ni habilita canjes.
+- **Caja:** el ejemplo comienza con un turno abierto. Registra entradas o retiros con motivo, revisa efectivo y terminal, y compara el conteo con el efectivo esperado antes de confirmar el corte. Un turno cerrado no admite movimientos ni ventas. Puedes abrir otro con un nuevo fondo inicial.
+- **Administración:** el resumen del día y las existencias de empaques reflejan las ventas confirmadas dentro de la misma sesión de la aplicación. El fondo inicial, las entradas y los retiros no son ventas.
 
 La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
 

@@ -18,6 +18,8 @@ test("las páginas admiten acceso directo y recarga sin desbordamiento", async (
     { path: "/mi-tarjeta", title: "Mi tarjeta", heading: "Hola, Miembro.", staff: false },
     { path: "/mi-tarjeta/disenos", title: "Elegir diseño", heading: /Tu pausa\.\s*Con magia\./, staff: false },
     { path: "/caja/venta", title: "Punto de venta", staff: true },
+    { path: "/caja/miembros", title: "Miembros", staff: true },
+    { path: "/caja/turno", title: "Caja", staff: true },
     { path: "/administrador", title: "Administración", staff: true },
   ];
   for (const { path, title, heading, staff } of destinations) {
