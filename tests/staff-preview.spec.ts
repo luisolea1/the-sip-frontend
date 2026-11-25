@@ -11,6 +11,8 @@ test("una venta mixta aplica empaques y sellos una sola vez al confirmar", async
   await ticket.getByLabel("Mixto").check();
   await ticket.getByLabel("Parte en efectivo").fill("100");
   await ticket.getByLabel("Voucher de ejemplo").fill("00123");
+  await expect(ticket.getByRole("link", { name: "Buscar miembro" })).toBeHidden();
+  await ticket.getByText("Añadir miembro", { exact: true }).press("Enter");
   await ticket.getByRole("link", { name: "Simular escaneo de QR" }).click();
   await expect(page.getByRole("region", { name: "Tarjeta seleccionada" })).toContainText("01725");
   await page.getByRole("button", { name: "Usar en esta venta" }).click();
