@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { ContentSkeleton } from "@/shared/components/ContentSkeleton";
 import { Outlet, useOutletContext } from "react-router";
 import { defaultCardDesign, type CardDesign } from "../card-designs";
 
@@ -14,7 +15,9 @@ export default function MemberCardLayout() {
     <div className="members-area-theme min-h-screen bg-muted px-1 py-1 text-foreground">
       <a href="#member-card-content" className="sr-only focus:not-sr-only">Saltar al contenido</a>
       <main id="member-card-content" tabIndex={-1} className="mx-auto grid max-w-[26rem] gap-5 rounded-[1.75rem] border border-border bg-white px-5 py-6 sm:px-7">
-        <Outlet context={{ design, saveDesign } satisfies CardSession} />
+        <Suspense fallback={<ContentSkeleton label="Cargando tarjeta" />}>
+          <Outlet context={{ design, saveDesign } satisfies CardSession} />
+        </Suspense>
       </main>
     </div>
   );

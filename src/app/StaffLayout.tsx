@@ -1,31 +1,36 @@
 import { LayoutDashboard, Store } from "lucide-react";
-import type { ReactNode } from "react";
-import { Outlet } from "react-router";
+import { Suspense } from "react";
+import { Outlet, useMatch } from "react-router";
+import { paths } from "./paths";
+import { ContentSkeleton } from "@/shared/components/ContentSkeleton";
+import { DashboardSkeleton } from "@/features/admin/components/DashboardSkeleton";
+import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
 import { PosNavigation } from "@/features/pos/components/PosNavigation";
 
-type StaffLayoutProps = { area: "pos" | "admin"; children?: ReactNode; footer?: ReactNode; showPreviewBadge?: boolean };
-
-export function StaffLayout({ area, children, footer, showPreviewBadge = true }: StaffLayoutProps) {
-  const isSale = area === "pos";
-  const Icon = isSale ? Store : LayoutDashboard;
+export function StaffLayout() {
+  const isAdmin = !!useMatch(paths.admin);
+  const isSale = !!useMatch(paths.sale);
+  const Icon = isAdmin ? LayoutDashboard : Store;
   const content = <>
       <a href="#staff-content" className="sr-only focus:not-sr-only">Saltar al contenido</a>
       <header className="flex flex-wrap items-center gap-x-5 gap-y-2 bg-primary px-4 py-4 text-white sm:px-8">
         <span className="text-xl font-extrabold tracking-tight">THE SIP</span>
         <span className="flex items-center gap-2 border-l border-white/40 pl-4">
-          <Icon aria-hidden="true" size={18} /> {isSale ? "Caja" : "Administración"}
+          <Icon aria-hidden="true" size={18} /> {isAdmin ? "Administración" : "Caja"}
         </span>
-        {showPreviewBadge && <span className="ml-auto rounded-full border border-white/40 px-3 py-1 text-xs font-semibold">Vista previa</span>}
+        {!isSale && <span className="ml-auto rounded-full border border-white/40 px-3 py-1 text-xs font-semibold">Vista previa</span>}
       </header>
-      {isSale && <PosNavigation />}
+      {!isAdmin && <PosNavigation />}
       <main id="staff-content" tabIndex={-1} className="grid min-w-0 gap-6 p-4 sm:p-6 lg:p-8">
-        {children ?? <Outlet />}
+        {isAdmin && <AreaIntroduction title="Administración" description="Sucursal Centro · Ventas e inventario con datos de ejemplo." />}
+        <Suspense fallback={isAdmin ? <DashboardSkeleton /> : <ContentSkeleton label="Cargando operación de caja" />}>
+          <Outlet />
+        </Suspense>
       </main>
     </>;
   return (
-    <div className={`staff-workspace ${isSale ? "pos-area-theme" : "admin-area-theme"} ${footer ? "pos-sale-workspace" : ""}`}>
-      {footer ? <div className="pos-sale-scroll">{content}</div> : content}
-      {footer}
+    <div className={`staff-workspace ${isAdmin ? "admin-area-theme" : "pos-area-theme"} ${isSale ? "pos-sale-workspace" : ""}`}>
+      <div className={isSale ? "pos-sale-scroll" : undefined}>{content}</div>
     </div>
   );
 }

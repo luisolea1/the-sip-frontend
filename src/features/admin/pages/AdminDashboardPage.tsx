@@ -1,6 +1,5 @@
 import { ReceiptText } from "lucide-react";
 import { useState } from "react";
-import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
 import { formatMoney } from "@/shared/utils/format-money";
 import { StockOverview } from "../components/StockOverview";
 import { useStaffSession } from "@/features/pos/StaffSession";
@@ -19,7 +18,6 @@ export default function AdminDashboardPage() {
   ];
 
   return <>
-    <AreaIntroduction title="Administración" description="Sucursal Centro · Ventas e inventario con datos de ejemplo." />
     <section aria-labelledby="admin-summary-title" className="grid gap-4">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="admin-summary-title">Resumen de ventas</h2>

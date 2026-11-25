@@ -1,4 +1,3 @@
-import { StaffLayout } from "@/app/StaffLayout";
 import { useEffect, useRef, useState } from "react";
 import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
@@ -23,9 +22,7 @@ export default function SalePage() {
     return () => observer.disconnect();
   }, []);
 
-  return <StaffLayout area="pos" showPreviewBadge={false} footer={<div className="pos-ticket-shortcut" hidden={ticketVisible}>
-    <strong>Total · {formatMoney(total)}</strong><a href="#pos-ticket" className="staff-secondary-button">Ver compra</a>
-  </div>}>
+  return <>
     <header className="pos-sale-heading">
       <title>Punto de venta | THE SIP</title>
       <h1>Hola, {firstName}.</h1>
@@ -35,5 +32,8 @@ export default function SalePage() {
       <ProductCatalog onAdd={product => dispatch({ type: "quantity", product, delta: 1 })} />
       <TicketPanel ref={ticketRef} total={total} />
     </div>
-  </StaffLayout>;
+    <div className="pos-ticket-shortcut" hidden={ticketVisible}>
+      <strong>Total · {formatMoney(total)}</strong><a href="#pos-ticket" className="staff-secondary-button">Ver compra</a>
+    </div>
+  </>;
 }

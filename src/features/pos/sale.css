@@ -65,10 +65,15 @@
   @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2 font-semibold text-white no-underline disabled:cursor-default disabled:opacity-45;
 }
 .pos-ticket-shortcut {
-  @apply flex items-center justify-between gap-3 border-t border-border bg-white px-4 py-2;
+  @apply fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-3 border-t border-border bg-white px-4 py-2;
   padding-bottom: max(.5rem, env(safe-area-inset-bottom));
 }
 .pos-ticket-shortcut[hidden] { display: none; }
+@media (max-width: 51.999rem) {
+  .pos-sale-scroll:has(.pos-ticket-shortcut:not([hidden])) {
+    margin-bottom: calc(3.5rem + max(.5rem, env(safe-area-inset-bottom)));
+  }
+}
 @media (min-width: 52rem) {
   .pos-sale-layout {
     grid-template-columns: minmax(0, 2fr) minmax(19rem, 1fr);
