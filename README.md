@@ -40,10 +40,12 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | Registro de miembros | `/registro-miembros` | Público |
 | Tarjeta de muestra | `/mi-tarjeta` | Público; las tarjetas reales requerirán sesión |
 | Selector de diseños | `/mi-tarjeta/disenos` | Público, sin registro |
-| Punto de venta | `/caja/venta` | Cajero asignado a la sucursal o administrador autorizado |
-| Administración | `/administrador` | Administrador |
+| Punto de venta | `/caja/venta` | Vista previa sin registro; en el piloto, cajero asignado o administrador autorizado |
+| Administración | `/administrador` | Vista previa sin registro; en el piloto, administrador |
 
-El portal público incluye el registro, la tarjeta y su selector de diseños; el iPad del cajero abre directamente `/caja/venta`, y el administrador entra por `/administrador`. Comparten estilos, pero no un menú global. El registro es una vista previa; las rutas privadas solo muestran información de acceso.
+El portal público incluye el registro, la tarjeta y su selector de diseños; el iPad del cajero abre directamente `/caja/venta`, y el administrador entra por `/administrador`. Comparten estilos, pero no un menú global.
+
+**Vista previa local:** en caja puedes armar un ticket y calcular el cambio o el reparto de un pago mixto. En administración puedes seleccionar el día del resumen y consultar los insumos que alcanzaron su mínimo. Todo usa datos de ejemplo: al recargar se restablecen el ticket y los filtros. Las simulaciones de caja no se cobran ni se agregan a las ventas del panel.
 
 La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
 
@@ -285,4 +287,4 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Estas pruebas usan anchos de 320, 1024 y 1440 píxeles; la validación física en iPad sigue pendiente.
+Las pruebas de las vistas del personal cubren móvil, tableta en vertical y horizontal y escritorio. La validación física en iPad sigue pendiente.

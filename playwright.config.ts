@@ -7,6 +7,7 @@ export default defineConfig({
   use: { baseURL },
   projects: [
     { name: "mobile", use: { viewport: { width: 320, height: 640 } } },
+    { name: "tablet-portrait", testMatch: "**/staff-preview.spec.ts", use: { viewport: { width: 768, height: 1024 } } },
     { name: "tablet", use: { viewport: { width: 1024, height: 768 } } },
     { name: "desktop", use: { viewport: { width: 1440, height: 900 } } },
   ],
