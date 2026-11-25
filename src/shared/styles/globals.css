@@ -82,6 +82,12 @@
   .staff-workspace-panel {
     @apply min-w-0 rounded-3xl border border-border bg-white p-4 shadow-sm sm:p-5;
   }
+  .staff-primary-button {
+    @apply min-h-11 cursor-pointer rounded-xl bg-primary px-4 py-2 font-semibold text-white disabled:cursor-default disabled:opacity-50;
+  }
+  .staff-secondary-button {
+    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-border px-4 py-2 font-semibold text-foreground no-underline hover:bg-muted;
+  }
   .member-card-design-option {
     @apply relative grid min-w-0 cursor-pointer content-start gap-2;
   }

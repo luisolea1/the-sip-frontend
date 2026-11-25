@@ -4,6 +4,7 @@ import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
 import { paths } from "./paths";
 import { SiteLayout } from "./SiteLayout";
 import { StaffLayout } from "./StaffLayout";
+import { StaffSession } from "@/features/pos/StaffSession";
 
 const MemberRegistrationPage = lazy(() => import("@/features/members/pages/MemberRegistrationPage"));
 const MemberCardPage = lazy(() => import("@/features/members/pages/MemberCardPage"));
@@ -29,12 +30,14 @@ export function AppRoutes() {
             <Route path={paths.memberCard} element={<MemberCardPage />} />
             <Route path={paths.memberCardDesigns} element={<MemberCardDesignPage />} />
           </Route>
+          <Route element={<StaffSession />}>
           <Route element={<StaffLayout area="pos" />}>
             <Route path={paths.sale} element={<SalePage />} />
           </Route>
           <Route element={<StaffLayout area="admin" />}>
             <Route path={paths.admin} element={<AdminDashboardPage />} />
-            <Route path="/dueno" element={<Navigate to={paths.admin} replace />} />
+             <Route path="/dueno" element={<Navigate to={paths.admin} replace />} />
+           </Route>
           </Route>
         </Routes>
       </Suspense>

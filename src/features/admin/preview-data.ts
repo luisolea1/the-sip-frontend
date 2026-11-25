@@ -15,5 +15,4 @@ export const salesByDay = {
 export const supplies = [
   { name: "Café en grano", unit: "kg", stock: 1.5, minimum: 2 },
   { name: "Leche entera", unit: "L", stock: 4, minimum: 4 },
-  { name: "Vasos de 12 oz", unit: "pzas.", stock: 85, minimum: 50 },
 ];
