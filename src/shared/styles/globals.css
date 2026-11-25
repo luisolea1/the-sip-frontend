@@ -74,6 +74,14 @@
 }
 
 @layer components {
+  .staff-workspace {
+    @apply min-h-screen bg-background text-foreground;
+    font: 0.875rem/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: -0.015em;
+  }
+  .staff-workspace-panel {
+    @apply min-w-0 rounded-3xl border border-border bg-white p-4 shadow-sm sm:p-5;
+  }
   .member-card-design-option {
     @apply relative grid min-w-0 cursor-pointer content-start gap-2;
   }

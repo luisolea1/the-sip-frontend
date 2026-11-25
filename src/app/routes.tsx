@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router";
 import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
 import { paths } from "./paths";
 import { SiteLayout } from "./SiteLayout";
+import { StaffLayout } from "./StaffLayout";
 
 const MemberRegistrationPage = lazy(() => import("@/features/members/pages/MemberRegistrationPage"));
 const MemberCardPage = lazy(() => import("@/features/members/pages/MemberCardPage"));
@@ -16,7 +17,7 @@ export function AppRoutes() {
     <BrowserRouter>
       <Suspense fallback={<p role="status">Cargando página…</p>}>
         <Routes>
-          <Route element={<SiteLayout area="members" />}>
+          <Route element={<SiteLayout />}>
             <Route index element={<Navigate to={paths.registration} replace />} />
             <Route path={paths.registration} element={<MemberRegistrationPage />} />
             <Route path="*" element={<>
@@ -28,10 +29,10 @@ export function AppRoutes() {
             <Route path={paths.memberCard} element={<MemberCardPage />} />
             <Route path={paths.memberCardDesigns} element={<MemberCardDesignPage />} />
           </Route>
-          <Route element={<SiteLayout area="pos" />}>
+          <Route element={<StaffLayout area="pos" />}>
             <Route path={paths.sale} element={<SalePage />} />
           </Route>
-          <Route element={<SiteLayout area="admin" />}>
+          <Route element={<StaffLayout area="admin" />}>
             <Route path={paths.admin} element={<AdminDashboardPage />} />
             <Route path="/dueno" element={<Navigate to={paths.admin} replace />} />
           </Route>
