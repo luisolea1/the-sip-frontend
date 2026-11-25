@@ -15,7 +15,7 @@ export default function MemberCardPage() {
   return <>
     <title>Mi tarjeta | THE SIP</title>
     <header className="flex items-center gap-2 font-bold">
-      <span className="rounded-lg bg-primary p-2 text-white"><CoffeeCupIcon /></span> THE SIP
+      <span className="text-primary">THE SIP</span>
       <span aria-hidden="true" className="ml-auto rounded-full bg-muted p-2 text-xs">{initials}</span>
     </header>
     <div className="mt-2"><h1 className="break-words text-2xl font-bold tracking-tight">Hola, {firstName}.</h1>
