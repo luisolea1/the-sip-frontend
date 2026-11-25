@@ -1,5 +1,54 @@
+import { ReceiptText } from "lucide-react";
+import { useState } from "react";
 import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
+import { formatMoney } from "@/shared/utils/format-money";
+import { StockOverview } from "../components/StockOverview";
+import { salesByDay } from "../preview-data";
+import "../dashboard.css";
 
 export default function AdminDashboardPage() {
-  return <AreaIntroduction title="Administración" description="El panel de ventas e inventario requiere una sesión de administrador. El acceso todavía no está habilitado." />;
+  const [day, setDay] = useState<keyof typeof salesByDay>("today");
+  const sales = salesByDay[day];
+  const total = sales.reduce((sum, sale) => sum + sale.total, 0);
+  const metrics = [
+    { label: "Ventas del día", value: formatMoney(total) },
+    { label: "Tickets", value: sales.length },
+    { label: "Ticket promedio", value: formatMoney(Math.round(total / sales.length)) },
+  ];
+
+  return <>
+    <AreaIntroduction title="Administración" description="Sucursal Centro · Ventas e inventario con datos de ejemplo." />
+    <section aria-labelledby="admin-summary-title" className="grid gap-4">
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="admin-summary-title">Resumen de ventas</h2>
+        <label className="flex items-center gap-2 font-semibold">Periodo
+          <select className="min-h-11 rounded-xl border border-border px-3" value={day}
+            onChange={event => setDay(event.target.value === "today" ? "today" : "yesterday")}>
+            <option value="today">Hoy</option><option value="yesterday">Ayer</option>
+          </select>
+        </label>
+      </header>
+      <dl className="admin-metric-grid">
+        {metrics.map(({ label, value }) => <div key={label} className="staff-workspace-panel">
+          <dt className="font-semibold">{label}</dt>
+          <dd className="mt-2 text-3xl font-bold tracking-tight text-primary">{value}</dd>
+        </div>)}
+      </dl>
+    </section>
+    <div className="admin-detail-grid">
+      <section aria-labelledby="admin-sales-title" className="staff-workspace-panel">
+        <header className="mb-2 flex items-center gap-2">
+          <ReceiptText size={20} aria-hidden="true" className="text-primary" />
+          <h2 id="admin-sales-title">Ventas recientes</h2>
+        </header>
+        <ol className="divide-y divide-border">
+          {sales.map(sale => <li key={sale.ticket} className="flex flex-wrap items-center justify-between gap-2 py-3">
+            <div><strong>Ticket {sale.ticket}</strong><p><time>{sale.time}</time> · {sale.method}</p></div>
+            <strong>{formatMoney(sale.total)}</strong>
+          </li>)}
+        </ol>
+      </section>
+      <StockOverview />
+    </div>
+  </>;
 }

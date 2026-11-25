@@ -1,0 +1,18 @@
+@reference "../../shared/styles/globals.css";
+
+.admin-metric-grid, .admin-detail-grid {
+  display: grid;
+  gap: 1rem;
+}
+.admin-metric-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+}
+.admin-detail-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 23rem), 1fr));
+  align-items: start;
+}
+.admin-stock-alert, .admin-stock-available {
+  @apply rounded-full px-3 py-1 text-xs font-semibold;
+}
+.admin-stock-alert { @apply bg-accent text-primary; }
+.admin-stock-available { @apply bg-muted text-foreground; }
