@@ -2,7 +2,8 @@ import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/shared/components/ui/input";
 import { formatMoney } from "@/shared/utils/format-money";
-import { productCategories, products, type Product } from "../catalog";
+import { productCategories, saleProducts, type Product } from "../catalog";
+import { useStaffSession } from "../StaffSession";
 import { ProductIllustration } from "./ProductIllustration";
 
 const categories = ["Todo", ...productCategories] as const;
@@ -10,7 +11,8 @@ const categories = ["Todo", ...productCategories] as const;
 export function ProductCatalog({ onAdd }: { onAdd: (product: Product) => void }) {
   const [category, setCategory] = useState<(typeof categories)[number]>("Todo");
   const [query, setQuery] = useState("");
-  const visible = products.filter(product =>
+  const { state } = useStaffSession();
+  const visible = saleProducts(state.menu).filter(product =>
     (category === "Todo" || product.category === category) &&
     `${product.name} ${product.size}`.toLocaleLowerCase("es").includes(query.trim().toLocaleLowerCase("es"))
   );

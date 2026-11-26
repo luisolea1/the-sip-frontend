@@ -5,8 +5,3 @@ export const salesByDay = {
     { ticket: "0052", time: "16:48", method: "Tarjeta", total: 6800 },
   ],
 };
-
-export const supplies = [
-  { name: "Café en grano", unit: "kg", stock: 1.5, minimum: 2 },
-  { name: "Leche entera", unit: "L", stock: 4, minimum: 4 },
-];

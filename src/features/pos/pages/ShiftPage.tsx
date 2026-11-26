@@ -4,8 +4,6 @@ import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
 import { ShiftForm, type ShiftOperation } from "../components/ShiftForm";
 import { shiftSummary } from "../shift";
-import { packaging, type PackageId } from "../packaging";
-import { availablePackages } from "../session";
 
 function Detail({ label, value }: { label: string; value: string }) {
   return <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border py-2">
@@ -77,7 +75,7 @@ export default function ShiftPage() {
         </section>
         <section className="staff-workspace-panel">
           <h2>Empaques disponibles</h2><dl className="mt-3">
-            {(Object.keys(packaging) as PackageId[]).map(id => <Detail key={id} label={packaging[id].name} value={`${availablePackages(state.sales, id)} pzas.`} />)}
+            {state.inventory.filter(item => item.kind === "Empaque").map(item => <Detail key={item.id} label={item.name} value={`${item.stock} pzas.`} />)}
           </dl>
         </section>
       </div>

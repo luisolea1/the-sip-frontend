@@ -2,7 +2,6 @@ import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import type { Ref } from "react";
 import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
-import { packaging } from "../packaging";
 import { nextTicketNumber } from "../session";
 import { quotePayment } from "../payment";
 import { CheckoutSummary } from "./CheckoutSummary";
@@ -48,7 +47,7 @@ export function TicketPanel({ total, ref }: { total: number; ref: Ref<HTMLElemen
                   }} />
               </label>}
             </div>
-            {takeaway > 0 && <p>Empaque: {packaging[product.packageId].name} × {takeaway}</p>}
+             {takeaway > 0 && <p>Empaque: {state.inventory.find(item => item.id === product.packageId)?.name} × {takeaway}</p>}
           </li>)}
         </ul>}
         {lines.length > 0 && <PaymentPreview note={quote.note} />}

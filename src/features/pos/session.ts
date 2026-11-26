@@ -1,5 +1,5 @@
-import type { Product, TicketLine } from "./catalog";
-import { packaging, type PackageId } from "./packaging";
+import { initialMenu, saleProducts, type MenuItem, type Product, type TicketLine } from "./catalog";
+import { consumeSale, initialInventory, roundStock, type StockMovement, type Supply } from "./inventory";
 import { emptyPayment, quotePayment, type Payment } from "./payment";
 import { sampleMembers, type PosMember } from "./members";
 import { newShift, sampleSales, sampleShift, type Movement } from "./shift";
@@ -11,9 +11,18 @@ export type Sale = {
 type Draft = { lines: TicketLine[]; payment: Payment; memberNumber: string | null };
 const emptyDraft: Draft = { lines: [], payment: emptyPayment, memberNumber: null };
 
-export const initialState = { draft: emptyDraft, sales: sampleSales, notice: "", members: sampleMembers, shift: sampleShift };
+export type Cashier = { id: string; name: string; username: string; active: boolean };
+const sampleTeam: Cashier[] = [{ id: "ana", name: sampleShift.cashier, username: "ana.l", active: true }];
+export const initialState = {
+  draft: emptyDraft, sales: sampleSales, notice: "", members: sampleMembers, shift: sampleShift,
+  menu: initialMenu, inventory: initialInventory, stockMovements: [] as StockMovement[], team: sampleTeam,
+};
 export type Session = typeof initialState;
 type Action =
+  | { type: "saveItem"; item: MenuItem }
+  | { type: "saveSupply"; supply: Supply }
+  | { type: "adjustStock"; movement: StockMovement }
+  | { type: "saveCashier"; cashier: Cashier }
   | { type: "quantity"; product: Product; delta: 1 | -1 }
   | { type: "takeaway"; id: string; count: number }
   | { type: "payment"; payment: Payment }
@@ -33,9 +42,9 @@ export function nextTicketNumber(sales: Sale[]) {
   return String(Number(sales[0]?.ticket ?? 0) + 1).padStart(4, "0");
 }
 
-export function availablePackages(sales: Sale[], id: PackageId) {
-  return sales.reduce((stock, sale) => stock - sale.lines.reduce((used, line) =>
-    used + (line.product.packageId === id ? line.takeaway : 0), 0), packaging[id].stock);
+function replaceById<T extends { id: string }>(items: T[], updated: T) {
+  return items.some(item => item.id === updated.id)
+    ? items.map(item => item.id === updated.id ? updated : item) : [...items, updated];
 }
 
 function changeQuantity(lines: TicketLine[], product: Product, delta: number) {
@@ -52,6 +61,28 @@ function changeQuantity(lines: TicketLine[], product: Product, delta: number) {
 export function sessionReducer(state: Session, action: Action): Session {
   const { draft, sales } = state;
   switch (action.type) {
+    case "saveItem": {
+      const menu = replaceById(state.menu, action.item);
+      if (!draft.lines.some(line => line.product.itemId === action.item.id)) return { ...state, menu };
+      const variants = saleProducts([action.item]);
+      const lines = draft.lines.flatMap(line => {
+        if (line.product.itemId !== action.item.id) return [line];
+        const product = variants.find(item => item.id === line.product.id);
+        return product ? [{ ...line, product }] : [];
+      });
+      return { ...state, menu, draft: { ...draft, lines, payment: emptyPayment }, notice: "El menú cambió. Revisa el ticket antes de cobrar." };
+    }
+    case "saveSupply": return { ...state, inventory: replaceById(state.inventory, action.supply) };
+    case "saveCashier": return { ...state, team: replaceById(state.team, action.cashier) };
+    case "adjustStock": {
+      const move = action.movement;
+      const inventory = state.inventory.map(supply => {
+        if (supply.id !== move.supplyId) return supply;
+        const stock = move.kind === "Conteo" ? move.quantity : supply.stock + (move.kind === "Compra" ? move.quantity : -move.quantity);
+        return { ...supply, stock: roundStock(stock) };
+      });
+      return { ...state, inventory, stockMovements: [move, ...state.stockMovements] };
+    }
     case "quantity":
       return { ...state, notice: "", draft: { ...draft, lines: changeQuantity(draft.lines, action.product, action.delta) } };
     case "takeaway":
@@ -84,7 +115,7 @@ export function sessionReducer(state: Session, action: Action): Session {
       const sale = { ticket, time: action.time, method: draft.payment.method, total, cash, voucher, lines: draft.lines, memberNumber: draft.memberNumber };
       const stamps = draft.lines.reduce((count, line) => count + (line.product.category === "Alimentos" ? 0 : line.quantity), 0);
       const members = state.members.map(member => member.number === draft.memberNumber ? { ...member, stamps: member.stamps + stamps } : member);
-      return { ...state, members, sales: [sale, ...sales], draft: emptyDraft, notice: `Venta simulada ${ticket} confirmada.` };
+      return { ...state, members, inventory: consumeSale(state.inventory, draft.lines), sales: [sale, ...sales], draft: emptyDraft, notice: `Venta simulada ${ticket} confirmada.` };
     }
   }
 }

@@ -1,17 +1,12 @@
 import { Package } from "lucide-react";
 import { useState } from "react";
-import { supplies } from "../preview-data";
+import { needsRestock } from "@/features/pos/inventory";
 import { useStaffSession } from "@/features/pos/StaffSession";
-import { packaging, type PackageId } from "@/features/pos/packaging";
-import { availablePackages } from "@/features/pos/session";
 
 export function StockOverview() {
   const [onlyLow, setOnlyLow] = useState(true);
   const { state } = useStaffSession();
-  const packages = (Object.keys(packaging) as PackageId[]).map(id => ({
-    ...packaging[id], stock: availablePackages(state.sales, id), unit: "pzas.",
-  }));
-  const visible = [...supplies, ...packages].filter(item => !onlyLow || item.stock <= item.minimum);
+  const visible = state.inventory.filter(item => !onlyLow || needsRestock(item));
   return (
     <section aria-labelledby="admin-stock-title" className="staff-workspace-panel">
       <header className="flex items-center gap-2">
