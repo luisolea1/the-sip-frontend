@@ -8,7 +8,7 @@ test("la cabecera de administración permanece mientras llega el resumen", async
     await route.continue();
   });
   await page.goto("/administrador", { waitUntil: "domcontentloaded" });
-  const heading = page.getByRole("heading", { name: "Administración", level: 1 });
+  const heading = page.getByRole("heading", { name: "Hola, Ana.", level: 1 });
   try {
     await expect(heading).toBeVisible();
     await expect(page.getByRole("status")).toHaveText("Cargando resumen de administración");

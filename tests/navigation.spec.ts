@@ -20,7 +20,12 @@ test("las páginas admiten acceso directo y recarga sin desbordamiento", async (
     { path: "/caja/venta", title: "Punto de venta", heading: "Hola, Ana.", staff: true },
     { path: "/caja/miembros", title: "Miembros", staff: true },
     { path: "/caja/turno", title: "Caja", staff: true },
-    { path: "/administrador", title: "Administración", staff: true },
+    { path: "/administrador", title: "Administración", heading: "Hola, Ana.", staff: true },
+    { path: "/administrador/menu", title: "Menú · Administración", heading: "Hola, Ana.", staff: true },
+    { path: "/administrador/menu/latte", title: "Menú · Administración", heading: "Hola, Ana.", staff: true },
+    { path: "/administrador/existencias", title: "Existencias · Administración", heading: "Hola, Ana.", staff: true },
+    { path: "/administrador/avisos", title: "Avisos · Administración", heading: "Hola, Ana.", staff: true },
+    { path: "/administrador/cajeros", title: "Cajeros · Administración", heading: "Hola, Ana.", staff: true },
   ];
   for (const { path, title, heading, staff } of destinations) {
     await page.goto(path);
@@ -42,7 +47,7 @@ test("las páginas admiten acceso directo y recarga sin desbordamiento", async (
 test("la dirección anterior redirige al panel de administración", async ({ page }) => {
   await page.goto("/dueno");
   await expect(page).toHaveURL(url => url.pathname === "/administrador");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Administración");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Hola, Ana.");
 });
 
 test("una dirección desconocida ofrece un enlace de regreso al registro", async ({ page }) => {

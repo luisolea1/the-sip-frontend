@@ -1,5 +1,22 @@
 import { expect, test } from "@playwright/test";
 
+test("el cumpleaños admite el 29 de febrero sin solicitar año", async ({ page }) => {
+  await page.goto("/registro-miembros");
+  await page.getByLabel("Nombre", { exact: true }).fill("Nora");
+  await page.getByLabel("Correo electrónico").fill("nora@example.com");
+  const month = page.getByRole("combobox", { name: "Mes", exact: true });
+  const day = page.getByRole("combobox", { name: "Día", exact: true });
+  await month.selectOption("2");
+  await expect(day.getByRole("option", { name: "30", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Registrarse" }).click();
+  await expect(day).toBeFocused();
+  await day.selectOption("29");
+  await page.getByRole("button", { name: "Registrarse" }).click();
+  await page.getByRole("link", { name: "Volver al registro de miembros" }).click();
+  await expect(month).toHaveValue("2");
+  await expect(day).toHaveValue("29");
+});
+
 test("el registro valida los campos y personaliza la tarjeta solo hasta recargar", async ({ page }) => {
   await page.goto("/registro-miembros");
   const name = page.getByLabel("Nombre", { exact: true });
