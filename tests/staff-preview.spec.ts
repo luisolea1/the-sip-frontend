@@ -33,21 +33,56 @@ test("una venta mixta aplica empaques y sellos una sola vez al confirmar", async
   await expect(page.getByText("$602.00", { exact: true })).toBeVisible();
   await expect(page.getByText("$272.00", { exact: true })).toBeVisible();
   await nav.getByRole("link", { name: "Miembros" }).click();
-  await page.getByLabel("Buscar por nombre o número de miembro").fill("maria");
+  await page.getByLabel("Buscar por correo o número de miembro").fill("maria@example.com");
   await expect(page.getByRole("region", { name: "Tarjeta seleccionada" })).toContainText("10 / 10 cafés");
   await page.reload();
+  await expect(page.getByRole("region", { name: "Tarjeta seleccionada" })).toHaveCount(0);
+  await page.getByRole("searchbox").fill("01725");
   await expect(page.getByRole("region", { name: "Tarjeta seleccionada" })).toContainText("8 / 10 cafés");
 });
 
-test("el cajero distingue homónimos por número y confirma la asociación manual", async ({ page }) => {
+test("al pasar del panel a caja no hay enlaces a administración ni miembros preseleccionados", async ({ page }) => {
+  await page.goto("/administrador");
+  await page.getByRole("link", { name: "Abrir punto de venta" }).click();
+  const adminLink = page.locator('a[href^="/administrador"], a[href^="/dueno"]');
+  await expect(page.getByRole("region", { name: "Tu compra" })).toBeVisible();
+  await expect(adminLink).toHaveCount(0);
+  await page.getByRole("link", { name: "Miembros", exact: true }).click();
+  const card = page.getByRole("region", { name: "Tarjeta seleccionada" });
+  const associate = page.getByRole("button", { name: "Usar en esta venta" });
+  await expect(page.getByRole("heading", { name: "Tus miembros" })).toBeVisible();
+  await expect(adminLink).toHaveCount(0);
+  await expect(card).toHaveCount(0);
+  await expect(associate).toHaveCount(0);
+  await page.getByRole("button", { name: "Diego López · Nº 01726" }).click();
+  await expect(card).toContainText("01726");
+  await page.getByRole("searchbox").clear();
+  await expect(card).toHaveCount(0);
+  await expect(associate).toHaveCount(0);
+  await page.getByRole("button", { name: "Diego López · Nº 01726" }).click();
+  await associate.click();
+  await expect(page.getByRole("region", { name: "Tu compra" })).toContainText("Diego López");
+  await expect(adminLink).toHaveCount(0);
+  await page.getByRole("link", { name: "Caja", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Caja", exact: true })).toBeVisible();
+  await expect(adminLink).toHaveCount(0);
+});
+
+test("el cajero distingue homónimos solo por correo o número exactos y confirma la asociación", async ({ page }) => {
   await page.goto("/caja/miembros");
   await page.getByRole("button", { name: "Nuevo miembro" }).click();
   await page.getByLabel("Nombre", { exact: true }).fill("María García");
   await page.getByLabel("Correo electrónico").fill("otra.maria@example.com");
   await page.getByRole("button", { name: "Crear miembro de ejemplo" }).click();
   const search = page.getByRole("searchbox");
-  await search.fill("garcia");
-  await expect(page.getByRole("button", { name: /María García · Nº/ })).toHaveCount(2);
+  for (const query of ["María García", "maria@example", "1727"]) {
+    await search.fill(query);
+    await expect(page.getByText("No se encontraron miembros.")).toBeVisible();
+  }
+  await search.fill(" OTRA.MARIA@EXAMPLE.COM ");
+  const card = page.getByRole("region", { name: "Tarjeta seleccionada" });
+  await expect(card).toContainText("01727");
+  await expect(card).not.toContainText("otra.maria@example.com");
   await search.fill("01727");
   await page.getByRole("button", { name: "Usar en esta venta" }).click();
   await expect(page.getByText("María García · Nº 01727")).toBeVisible();
@@ -104,6 +139,8 @@ test("el ticket suma cantidades y calcula el cambio sin conservar la venta", asy
   await expect(catalog.getByRole("button", { name: /Añadir Chai/ })).toBeVisible();
   await expect(catalog.getByRole("button", { name: /Añadir Latte/ })).toHaveCount(0);
   await catalog.getByRole("button", { name: "Alimentos", exact: true }).click();
+  await expect(catalog.getByRole("button", { name: /Añadir Muffin/ })).toHaveCount(0);
+  await catalog.getByRole("button", { name: "Postres", exact: true }).click();
   await expect(catalog.getByRole("button", { name: /Añadir Latte/ })).toHaveCount(0);
   await catalog.getByRole("button", { name: /Añadir Muffin/ }).click();
 
@@ -133,14 +170,32 @@ test("el ticket suma cantidades y calcula el cambio sin conservar la venta", asy
 });
 
 test("el resumen y las compras reflejan sus filtros solo hasta recargar", async ({ page }) => {
+  await page.clock.setFixedTime(new Date(2026, 10, 2, 12));
   await page.goto("/administrador");
   const summary = page.getByRole("region", { name: "Resumen de ventas" });
-  const sales = page.getByRole("region", { name: "Ventas recientes" });
+  const revenue = page.getByRole("region", { name: "Así van tus ventas" });
+  const hours = page.getByRole("region", { name: "Tu momento más concurrido" });
+  await expect(revenue.getByRole("button")).toHaveCount(4);
+  await expect(revenue.getByRole("button", { pressed: true })).toHaveAccessibleName(/Semana 1 .*: \$675\.00/);
+  await expect(revenue.getByRole("button", { name: /Semana 4 .*: \$0\.00/ })).toBeVisible();
+  await expect(hours.getByRole("button")).toHaveCount(13);
+  await expect(hours.getByRole("button").first()).toHaveAccessibleName("07:00–08:00: 0 tickets");
+  await expect(hours.getByRole("button").last()).toHaveAccessibleName("19:00–20:00: 0 tickets");
   await expect(summary).toContainText("$402.00");
-  await page.getByLabel("Periodo").selectOption("yesterday");
+  const period = page.getByRole("combobox", { name: "Periodo", exact: true });
+  await period.selectOption("yesterday");
   await expect(summary).toContainText("$273.00");
   await expect(summary).toContainText("$91.00");
-  await expect(sales.getByRole("listitem")).toHaveCount(3);
+  await expect(hours.getByRole("button", { pressed: true })).toHaveAccessibleName("17:00–18:00: 2 tickets");
+  await expect(revenue.getByRole("button", { pressed: true })).toHaveAccessibleName(/Semana 1 .*: \$675\.00/);
+  await period.selectOption("week");
+  await expect(revenue.getByRole("button")).toHaveCount(4);
+  await expect(hours.getByRole("button", { pressed: true })).toHaveAccessibleName("12:00–13:00: 4 tickets");
+  await period.selectOption("month");
+  await expect(revenue.getByRole("button")).toHaveCount(4);
+  await expect(revenue.getByRole("button", { pressed: true })).toHaveAccessibleName(/Semana 1 .*: \$675\.00/);
+  await revenue.getByRole("button", { name: /Semana 2 .*: \$0\.00/ }).press("Enter");
+  await expect(revenue.getByRole("button", { pressed: true })).toHaveAccessibleName(/Semana 2/);
   await expect(page.getByText("Leche entera")).toBeVisible();
   await expect(page.getByText("Vasos de 12 oz")).toBeHidden();
   await page.getByLabel("Solo insumos por reponer").uncheck();

@@ -44,17 +44,20 @@ Aplicación web para el punto de venta, la administración de cafeterías y el p
 | Miembros en caja | `/caja/miembros` | Vista previa del cajero: búsqueda, alta y asociación al ticket |
 | Turno de caja | `/caja/turno` | Vista previa del cajero: apertura, movimientos y corte |
 | Administración | `/administrador` | Vista previa sin registro; en el piloto, administrador |
+| Registro de administrador | `/administrador/registro` | Prueba visual con datos ficticios; no crea cuentas ni inicia sesión |
 
 El portal público incluye el registro, la tarjeta y su selector de diseños; el iPad del cajero abre directamente `/caja/venta`, y el administrador entra por `/administrador`. Comparten estilos, pero no un menú global.
 
 **Vista previa local:** Administración, Venta, Miembros y Caja comparten el estado en memoria al navegar en la misma pestaña del navegador. Una pestaña nueva o una recarga inicia otra sesión de ejemplo.
 
 - **Venta:** marca «Para llevar» y ajusta las unidades por producto. Confirmar la venta simulada descuenta un vaso de su tamaño por bebida marcada o una charola por alimento marcado; editar o vaciar el ticket no consume empaques. La parte en efectivo entra al cajón; la parte en tarjeta se registra por separado con un voucher ficticio único.
-- **Miembros:** busca por nombre o número, verifica la tarjeta y pulsa «Usar en esta venta». El escaneo simulado selecciona una tarjeta de ejemplo sin usar la cámara. Para visualizar la fidelidad, cada bebida confirmada suma un sello al miembro asociado; los alimentos no suman sellos. Esta regla ilustrativa no define las condiciones del piloto ni habilita canjes.
+- **Miembros:** busca por correo completo (sin distinguir mayúsculas) o número de miembro exacto (con sus ceros iniciales), verifica la tarjeta y pulsa «Usar en esta venta». La futura consulta al backend seguirá el mismo criterio. El escaneo simulado selecciona una tarjeta de ejemplo sin usar la cámara. Para visualizar la fidelidad, cada bebida confirmada suma un sello al miembro asociado; los alimentos no suman sellos. Esta regla ilustrativa no define las condiciones del piloto ni habilita canjes.
 - **Caja:** el ejemplo comienza con un turno abierto. Registra entradas o retiros con motivo, revisa efectivo y terminal, y compara el conteo con el efectivo esperado antes de confirmar el corte. Un turno cerrado no admite movimientos ni ventas. Puedes abrir otro con un nuevo fondo inicial.
 - **Administración:** `/administrador` abre Resumen. En `/administrador/menu` puedes crear, editar u ocultar productos, precios, presentaciones y recetas. «Abrir punto de venta» muestra el catálogo actualizado. Una edición que afecte un ticket abierto recalcula sus líneas y pide revisar el pago; los tickets confirmados conservan sus precios. Existencias permite compras, mermas y conteos; Avisos muestra un registro por insumo en o por debajo del mínimo. Cajeros administra el equipo local sin crear credenciales.
 
 La API verificará los permisos y la sucursal en cada operación. Cambiar la URL u ocultar un botón no concede ni revoca permisos. Un miembro solo podrá consultar su propia tarjeta.
+
+Desde Administración se puede abrir el punto de venta. Venta, Miembros y Turno no incluyen enlaces al panel, independientemente de cómo se entre en caja. En la demo, `/administrador` sigue disponible por URL directa hasta integrar la autenticación del backend. En Miembros, la tarjeta solo aparece tras una coincidencia exacta, un escaneo válido o una selección explícita; el botón «Usar en esta venta» confirma la asociación.
 
 ### Prototipos de referencia
 

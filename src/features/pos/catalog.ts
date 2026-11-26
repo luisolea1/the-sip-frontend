@@ -1,12 +1,13 @@
-export const productCategories = ["Café", "Bebidas", "Alimentos"] as const;
+export const productCategories = ["Café", "Bebidas", "Alimentos", "Postres"] as const;
 export type Category = (typeof productCategories)[number];
+export const categoryIllustrations = { Café: "latte", Bebidas: "chai", Alimentos: "salad", Postres: "muffin" } as const satisfies Record<Category, string>;
 export type RecipeLine = { supplyId: string; quantity: number };
 export type Presentation = { id: string; size: string; price: number; packageId: string; recipe: RecipeLine[] };
 export type MenuItem = {
   id: string; name: string; category: Category; visible: boolean;
-  illustration: "latte" | "americano" | "chai" | "muffin"; photo?: string; variants: Presentation[];
+  illustration: (typeof categoryIllustrations)[Category] | "americano"; variants: Presentation[];
 };
-export type Product = Presentation & Pick<MenuItem, "name" | "category" | "illustration" | "photo"> & { itemId: string };
+export type Product = Presentation & Pick<MenuItem, "name" | "category" | "illustration"> & { itemId: string };
 export type TicketLine = { product: Product; quantity: number; takeaway: number };
 
 const coffee = { supplyId: "coffee", quantity: 18 };
@@ -21,13 +22,13 @@ export const initialMenu: MenuItem[] = [
   { id: "chai", name: "Chai latte", category: "Bebidas", visible: true, illustration: "chai", variants: [
     { id: "chai", size: "Regular", price: 6800, packageId: "smallCup", recipe: [{ supplyId: "chai", quantity: 35 }, { supplyId: "milk", quantity: 200 }] },
   ] },
-  { id: "muffin", name: "Muffin de chocolate", category: "Alimentos", visible: true, illustration: "muffin", variants: [
+  { id: "muffin", name: "Muffin de chocolate", category: "Postres", visible: true, illustration: "muffin", variants: [
     { id: "muffin", size: "Pieza", price: 4200, packageId: "tray", recipe: [{ supplyId: "muffin", quantity: 1 }] },
   ] },
 ];
 
 export function saleProducts(menu: MenuItem[]): Product[] {
   return menu.filter(item => item.visible).flatMap(item => item.variants.map(variant => ({
-    ...variant, itemId: item.id, name: item.name, category: item.category, illustration: item.illustration, photo: item.photo,
+    ...variant, itemId: item.id, name: item.name, category: item.category, illustration: item.illustration,
   })));
 }

@@ -37,7 +37,7 @@ export default function AdminWorkspace() {
     <main id="admin-content" tabIndex={-1} className="admin-content">
       <header className="admin-welcome">
         <div><p className="admin-eyebrow">Administración · Centro</p><h1>Hola, Ana.</h1><p>Tu cafetería, en un solo lugar.</p></div>
-        <Link className="staff-secondary-button" to={paths.sale} state={{ fromAdmin: true }}><Store size={18} />Abrir punto de venta</Link>
+        <Link className="staff-secondary-button" to={paths.sale}><Store size={18} />Abrir punto de venta</Link>
       </header>
       <Suspense fallback={section.path === paths.admin ? <DashboardSkeleton /> : <ContentSkeleton label={`Cargando ${section.title}`} />}>
         <Outlet />

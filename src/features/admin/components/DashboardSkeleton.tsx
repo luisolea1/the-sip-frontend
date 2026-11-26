@@ -13,7 +13,7 @@ export function DashboardSkeleton() {
       </div>
     </div>
     <div aria-hidden="true" className="admin-detail-grid">
-      {["Ventas recientes", "Qué necesito comprar"].map(title => <div key={title} className="staff-workspace-panel grid gap-3">
+      {["Así van tus ventas", "Tu momento más concurrido"].map(title => <div key={title} className="staff-workspace-panel grid gap-3">
         <h2>{title}</h2>
         {[0, 1, 2, 3].map(row => <div key={row} className="h-11 rounded-lg bg-muted" />)}
       </div>)}

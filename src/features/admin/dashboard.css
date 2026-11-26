@@ -11,6 +11,32 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 23rem), 1fr));
   align-items: start;
 }
+.admin-chart { @apply grid gap-x-4 gap-y-3 shadow-none; grid-template-columns: minmax(0, 1fr) auto; container-type: inline-size; }
+.admin-chart header p, .admin-chart-value span { @apply text-sm text-muted-foreground; }
+.admin-chart-value { @apply grid content-start text-right; }
+.admin-chart-value strong { @apply text-2xl font-semibold tracking-tight tabular-nums; }
+.admin-chart-scroll { @apply col-span-full min-w-0 overflow-x-auto; }
+.admin-chart-bars {
+  display: flex;
+  padding: 1.75rem 2px 2px;
+  background: linear-gradient(var(--border), var(--border)) left 1.75rem / 100% 1px no-repeat,
+    linear-gradient(var(--border), var(--border)) left 6.25rem / 100% 1px no-repeat;
+}
+.admin-chart-column { @apply grid min-w-6 flex-1 cursor-pointer place-items-center bg-transparent; }
+.admin-chart-column:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+.admin-chart-track { @apply flex w-full items-end justify-center border-b border-border; height: 9rem; }
+.admin-chart-bar { @apply relative rounded-t-md; width: 70%; max-width: 3.75rem; background: color-mix(in srgb, var(--primary) 24%, white); }
+.admin-chart-bar > span { @apply absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap text-xs font-semibold tabular-nums; }
+.admin-chart-label { @apply py-2 text-xs text-muted-foreground; }
+.admin-chart-column[aria-pressed="true"] .admin-chart-bar { background: var(--primary); }
+.admin-chart-column[aria-pressed="true"] .admin-chart-label { @apply font-bold text-primary underline underline-offset-4; }
+.admin-chart-insight { @apply col-span-full border-t border-border pt-3 text-sm; }
+.admin-chart-insight strong { @apply text-primary; }
+.admin-chart-empty { @apply col-span-full py-8 text-muted-foreground; }
+@container (max-width: 27rem) {
+  .admin-chart header, .admin-chart-value { grid-column: 1 / -1; }
+  .admin-chart-value { text-align: left; }
+}
 .admin-stock-alert, .admin-stock-available {
   @apply rounded-full px-3 py-1 text-xs font-semibold;
 }
@@ -68,9 +94,9 @@
 .admin-stock-row { @apply grid items-center gap-4; grid-template-columns: minmax(0,2fr) repeat(2,minmax(0,1fr)) auto auto; }
 .admin-stock-row > div { @apply grid; }
 .admin-person > span { @apply grid size-10 place-items-center rounded-full bg-accent font-semibold text-primary; }
-.admin-ranking { @apply mt-3 grid gap-3; }
-.admin-ranking div { @apply flex justify-between gap-2; }
-.admin-ranking meter { width: 100%; accent-color: var(--primary); }
+.admin-ranking { @apply mt-2 divide-y divide-border tabular-nums; }
+.admin-ranking li { @apply grid items-center gap-x-3 py-4 last:pb-1; grid-template-columns: auto minmax(0, 1fr) auto; }
+.admin-ranking strong { @apply text-base font-semibold; }
 .admin-skip-link { @apply sr-only focus:not-sr-only focus:absolute focus:z-10 focus:bg-white focus:p-3; }
 @media (min-width: 701px) and (max-width: 900px) {
   .admin-workspace { grid-template-columns: 6.5rem minmax(0,1fr); }

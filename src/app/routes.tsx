@@ -15,6 +15,7 @@ const SalePage = lazy(() => import("@/features/pos/pages/SalePage"));
 const PosMembersPage = lazy(() => import("@/features/pos/pages/PosMembersPage"));
 const ShiftPage = lazy(() => import("@/features/pos/pages/ShiftPage"));
 const AdminDashboardPage = lazy(() => import("@/features/admin/pages/AdminDashboardPage"));
+const AdminRegistrationPage = lazy(() => import("@/features/admin/pages/AdminRegistrationPage"));
 const AdminWorkspace = lazy(() => import("@/features/admin/AdminWorkspace"));
 const MenuPage = lazy(() => import("@/features/admin/pages/MenuPage"));
 const MenuEditorPage = lazy(() => import("@/features/admin/pages/MenuEditorPage"));
@@ -38,6 +39,9 @@ export function AppRoutes() {
           <Route path={paths.memberCard} element={<MemberCardPage />} />
           <Route path={paths.memberCardDesigns} element={<MemberCardDesignPage />} />
         </Route>
+        <Route path={paths.adminRegistration} element={
+          <Suspense fallback={<ContentSkeleton label="Cargando registro de administrador" />}><AdminRegistrationPage /></Suspense>
+        } />
         <Route element={<Suspense fallback={<div className="p-5"><strong className="text-primary">THE SIP</strong><ContentSkeleton label="Cargando área del personal" /></div>}><StaffSession /></Suspense>}>
           <Route element={<StaffLayout />}>
             <Route path={paths.sale} element={<SalePage />} />

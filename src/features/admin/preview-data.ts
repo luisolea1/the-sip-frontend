@@ -18,8 +18,10 @@ const earlierSales = [
 
 export const periods = { today: "Hoy", yesterday: "Ayer", week: "Últimos 7 días", month: "Últimas 4 semanas" };
 export type Period = keyof typeof periods;
-export function periodSales(today: Sale[], period: Period) {
-  const history = [...today.map(s => ({ ...s, daysAgo: 0 })), ...salesByDay.yesterday.map(s => ({ ...s, daysAgo: 1 })), ...earlierSales];
+export function saleHistory(today: Sale[]) {
+  return [...today.map(s => ({ ...s, daysAgo: 0 })), ...salesByDay.yesterday.map(s => ({ ...s, daysAgo: 1 })), ...earlierSales];
+}
+export function periodSales(history: ReturnType<typeof saleHistory>, period: Period) {
   return history.filter(sale => {
     if (period === "today" || period === "yesterday") return sale.daysAgo === (period === "today" ? 0 : 1);
     return sale.daysAgo < (period === "week" ? 7 : 28);

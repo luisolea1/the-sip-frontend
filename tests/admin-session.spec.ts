@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("el precio editado pasa a caja, se conserva en la venta y se restablece al recargar", async ({ page }) => {
+  await page.clock.setFixedTime(new Date(2026, 10, 30, 19, 59));
   await page.goto("/administrador/menu");
   await page.getByRole("link", { name: "Editar Latte", exact: true }).click();
   await page.getByLabel("Precio en MXN").first().fill("72.50");
@@ -17,10 +18,22 @@ test("el precio editado pasa a caja, se conserva en la venta y se restablece al 
   await page.getByRole("button", { name: "Guardar producto" }).click();
   await page.getByRole("link", { name: "Vista de caja" }).click();
   await expect(page.getByRole("button", { name: /Añadir Latte,/ })).toHaveCount(0);
-  await page.getByRole("link", { name: "Volver al resumen de administración" }).click();
+  await page.goBack();
+  await page.getByRole("link", { name: "Resumen", exact: true }).click();
   await expect(page.getByRole("region", { name: "Resumen de ventas" })).toContainText("$474.50");
-  await page.getByText("Detalle del ticket 0059").click();
-  await expect(page.getByText("1 × Latte · Chico · 12 oz · $72.50 c/u")).toBeVisible();
+  const favorite = page.getByRole("region", { name: "Los favoritos del periodo" }).getByRole("listitem").first();
+  await expect(favorite).toContainText("Latte");
+  await expect(favorite).toContainText("5 unidades");
+  await expect(favorite).toContainText("$342.50");
+  const hours = page.getByRole("region", { name: "Tu momento más concurrido" });
+  await expect(hours.getByRole("button", { name: "19:00–20:00: 1 ticket" })).toBeVisible();
+  const period = page.getByRole("combobox", { name: "Periodo", exact: true });
+  await period.selectOption("month");
+  const revenue = page.getByRole("region", { name: "Así van tus ventas" });
+  await expect(revenue.getByRole("button", { pressed: true })).toHaveAccessibleName(/Semana 4 .*: \$857\.50/);
+  await period.selectOption("yesterday");
+  await expect(favorite).toContainText("3 unidades");
+  await expect(favorite).toContainText("$205.00");
   await page.getByRole("link", { name: "Abrir punto de venta" }).click();
   await page.reload();
   await expect(page.getByRole("button", { name: "Añadir Latte, Chico · 12 oz, $65.00" })).toBeVisible();

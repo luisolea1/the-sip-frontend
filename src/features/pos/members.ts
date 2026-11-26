@@ -7,6 +7,8 @@ export const sampleMembers: PosMember[] = [
   { number: "01726", name: "Diego López", email: "diego@example.com", stamps: 3 },
 ];
 
-export function searchText(value: string) {
-  return value.normalize("NFD").replace(/\p{M}/gu, "").trim().toLocaleLowerCase("es");
+export function searchMembers(members: PosMember[], search: string) {
+  const query = search.trim().toLowerCase();
+  if (!query) return members;
+  return members.filter(member => member.number === query || member.email.toLowerCase() === query);
 }

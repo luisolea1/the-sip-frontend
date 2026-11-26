@@ -1,25 +1,27 @@
-import { ReceiptText } from "lucide-react";
 import { useState } from "react";
 import { formatMoney } from "@/shared/utils/format-money";
 import { StockOverview } from "../components/StockOverview";
 import { useStaffSession } from "@/features/pos/StaffSession";
-import { periods, periodSales, type Period } from "../preview-data";
+import { periods, periodSales, saleHistory, type Period } from "../preview-data";
 import { SectionHeader } from "../components/SectionHeader";
+import { SalesChart } from "../components/SalesChart";
+import { hourlyTickets, monthlyRevenue } from "../sales-series";
+import { rankProducts } from "../product-ranking";
 import "../dashboard.css";
 
 export default function AdminDashboardPage() {
   const [period, setPeriod] = useState<Period>("today");
   const { state } = useStaffSession();
-  const sales = periodSales(state.sales, period);
+  const history = saleHistory(state.sales);
+  const sales = periodSales(history, period);
+  const revenue = monthlyRevenue(history);
   const total = sales.reduce((sum, sale) => sum + sale.total, 0);
-  const counts = new Map<string, number>();
-  for (const sale of sales) for (const { product, quantity } of sale.lines) counts.set(product.name, (counts.get(product.name) ?? 0) + quantity);
-  const ranking = [...counts].sort((a, b) => b[1] - a[1]);
+  const ranking = rankProducts(sales);
   const metrics = [
     { label: "Ventas del periodo", value: formatMoney(total) },
     { label: "Tickets", value: sales.length },
     { label: "Ticket promedio", value: formatMoney(sales.length ? Math.round(total / sales.length) : 0) },
-    { label: "Unidades vendidas", value: ranking.reduce((sum, [, units]) => sum + units, 0) },
+    { label: "Unidades vendidas", value: ranking.reduce((sum, product) => sum + product.units, 0) },
   ];
 
   return <>
@@ -42,23 +44,21 @@ export default function AdminDashboardPage() {
       </dl>
     </section>
     <div className="admin-detail-grid">
-      <section className="staff-workspace-panel"><h2>Productos más vendidos</h2>
-        <ol className="admin-ranking">{ranking.map(([name, units]) => <li key={name}><div><strong>{name}</strong><span>{units} uds.</span></div>
-          <meter aria-label={`Unidades de ${name}`} min={0} max={ranking[0][1]} value={units} /></li>)}</ol>
-      </section>
-      <section aria-labelledby="admin-sales-title" className="staff-workspace-panel">
-        <header className="mb-2 flex items-center gap-2">
-          <ReceiptText size={20} aria-hidden="true" className="text-primary" />
-          <h2 id="admin-sales-title">Ventas recientes</h2>
-        </header>
-        <ol className="divide-y divide-border">
-          {sales.map(sale => <li key={sale.ticket} className="flex flex-wrap items-center justify-between gap-2 py-3">
-            <div><strong>Ticket {sale.ticket}</strong><p>{sale.daysAgo === 0 ? "Hoy" : sale.daysAgo === 1 ? "Ayer" : `Hace ${sale.daysAgo} días`} · <time>{sale.time}</time> · {sale.method}</p></div>
-             <strong>{formatMoney(sale.total)}</strong>
-             <details className="basis-full"><summary className="admin-text-action">Detalle del ticket {sale.ticket}</summary>{sale.lines.map((line, i) =>
-               <p key={i}>{line.quantity} × {line.product.name} · {line.product.size} · {formatMoney(line.product.price)} c/u</p>)}</details>
-          </li>)}
-        </ol>
+      <SalesChart title="Así van tus ventas" subtitle={`Ventas semanales · ${revenue.month} · MXN`}
+        groups={revenue.weeks} metric="revenue" defaultIndex={revenue.currentWeek} />
+      <SalesChart key={period} title="Tu momento más concurrido" subtitle={`Tickets de 07:00 a 20:00 · ${periods[period]}`}
+        groups={hourlyTickets(sales)} metric="tickets" />
+    </div>
+    <div className="admin-detail-grid">
+      <section aria-labelledby="admin-favorites-title" className="staff-workspace-panel shadow-none">
+        <h2 id="admin-favorites-title">Los favoritos del periodo</h2>
+        <p className="mt-1 text-muted-foreground">Productos ordenados por unidades vendidas · MXN</p>
+        {ranking.length ? <ol className="admin-ranking">{ranking.map((product, index) => <li key={product.id}>
+          <span aria-hidden="true" className="text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
+          <div className="min-w-0 wrap-anywhere"><strong>{product.name}</strong>
+            <p className="text-muted-foreground">{product.units} {product.units === 1 ? "unidad" : "unidades"}</p></div>
+          <strong className="text-right">{formatMoney(product.revenue)}</strong>
+        </li>)}</ol> : <p className="mt-4">No hay productos vendidos en este periodo.</p>}
       </section>
       <StockOverview />
     </div>
