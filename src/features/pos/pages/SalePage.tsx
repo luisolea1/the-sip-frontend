@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router";
+import { paths } from "@/app/paths";
 import { formatMoney } from "@/shared/utils/format-money";
 import { useStaffSession } from "../StaffSession";
 import { ticketTotal } from "../session";
@@ -8,6 +10,7 @@ import "../sale.css";
 
 export default function SalePage() {
   const { state, dispatch } = useStaffSession();
+  const { state: navigation } = useLocation();
   const total = ticketTotal(state.draft.lines);
   const firstName = state.shift.cashier.trim().split(/\s+/)[0];
   const ticketRef = useRef<HTMLElement>(null);
@@ -27,6 +30,7 @@ export default function SalePage() {
       <title>Punto de venta | THE SIP</title>
       <h1>Hola, {firstName}.</h1>
       <p className="text-sm text-muted-foreground">Un nuevo día, un buen café.</p>
+      {navigation?.fromAdmin && <Link className="justify-self-start" to={paths.admin}>Volver al resumen de administración</Link>}
     </header>
     <div className="pos-sale-layout">
       <ProductCatalog onAdd={product => dispatch({ type: "quantity", product, delta: 1 })} />

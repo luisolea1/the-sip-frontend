@@ -3,22 +3,22 @@ import { useState } from "react";
 import { formatMoney } from "@/shared/utils/format-money";
 import { StockOverview } from "../components/StockOverview";
 import { useStaffSession } from "@/features/pos/StaffSession";
-import { salesByDay } from "../preview-data";
+import { periods, periodSales, type Period } from "../preview-data";
 import { SectionHeader } from "../components/SectionHeader";
 import "../dashboard.css";
 
 export default function AdminDashboardPage() {
-  const [day, setDay] = useState<"today" | "yesterday">("today");
+  const [period, setPeriod] = useState<Period>("today");
   const { state } = useStaffSession();
-  const sales = day === "today" ? state.sales : salesByDay.yesterday;
+  const sales = periodSales(state.sales, period);
   const total = sales.reduce((sum, sale) => sum + sale.total, 0);
   const counts = new Map<string, number>();
   for (const sale of sales) for (const { product, quantity } of sale.lines) counts.set(product.name, (counts.get(product.name) ?? 0) + quantity);
   const ranking = [...counts].sort((a, b) => b[1] - a[1]);
   const metrics = [
-    { label: "Ventas del día", value: formatMoney(total) },
+    { label: "Ventas del periodo", value: formatMoney(total) },
     { label: "Tickets", value: sales.length },
-    { label: "Ticket promedio", value: formatMoney(Math.round(total / sales.length)) },
+    { label: "Ticket promedio", value: formatMoney(sales.length ? Math.round(total / sales.length) : 0) },
     { label: "Unidades vendidas", value: ranking.reduce((sum, [, units]) => sum + units, 0) },
   ];
 
@@ -28,9 +28,9 @@ export default function AdminDashboardPage() {
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="admin-summary-title">Resumen de ventas</h2>
         <label className="flex items-center gap-2 font-semibold">Periodo
-          <select className="min-h-11 rounded-xl border border-border px-3" value={day}
-            onChange={event => setDay(event.target.value === "today" ? "today" : "yesterday")}>
-            <option value="today">Hoy</option><option value="yesterday">Ayer</option>
+          <select className="min-h-11 rounded-xl border border-border px-3" value={period}
+            onChange={event => setPeriod(event.target.value as Period)}>
+            {Object.entries(periods).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
           </select>
         </label>
       </header>
@@ -53,7 +53,7 @@ export default function AdminDashboardPage() {
         </header>
         <ol className="divide-y divide-border">
           {sales.map(sale => <li key={sale.ticket} className="flex flex-wrap items-center justify-between gap-2 py-3">
-            <div><strong>Ticket {sale.ticket}</strong><p><time>{sale.time}</time> · {sale.method}</p></div>
+            <div><strong>Ticket {sale.ticket}</strong><p>{sale.daysAgo === 0 ? "Hoy" : sale.daysAgo === 1 ? "Ayer" : `Hace ${sale.daysAgo} días`} · <time>{sale.time}</time> · {sale.method}</p></div>
              <strong>{formatMoney(sale.total)}</strong>
              <details className="basis-full"><summary className="admin-text-action">Detalle del ticket {sale.ticket}</summary>{sale.lines.map((line, i) =>
                <p key={i}>{line.quantity} × {line.product.name} · {line.product.size} · {formatMoney(line.product.price)} c/u</p>)}</details>

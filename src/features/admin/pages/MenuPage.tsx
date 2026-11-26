@@ -14,7 +14,7 @@ export default function MenuPage() {
   const items = state.menu.filter(item => category === "Todo" || item.category === category);
   return <>
     <SectionHeader title="Tu menú, a tu manera." description="Lo que guardes como visible aparecerá en su categoría en caja.">
-      <div className="admin-actions"><Link to={paths.sale} className="staff-secondary-button"><Eye size={16} />Vista de caja</Link>
+      <div className="admin-actions"><Link to={paths.sale} state={{ fromAdmin: true }} className="staff-secondary-button"><Eye size={16} />Vista de caja</Link>
         <Link className="admin-primary" to={`${paths.menu}/nuevo`}><Plus size={16} />Agregar producto</Link></div>
     </SectionHeader>
     <div className="admin-actions" role="group" aria-label="Categorías del menú">

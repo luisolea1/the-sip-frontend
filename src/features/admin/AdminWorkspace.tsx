@@ -22,7 +22,7 @@ export default function AdminWorkspace() {
   const alerts = state.inventory.filter(needsRestock).length;
   const section = sections.find(entry => entry.path !== paths.admin && pathname.startsWith(entry.path)) ?? sections[0];
   return <div className="staff-workspace admin-workspace">
-    <title>{section.path === paths.admin ? "Administración" : `${section.title} · Administración`} | THE SIP</title>
+    <title>{`${section.path === paths.admin ? "Administración" : `${section.title} · Administración`} | THE SIP`}</title>
     <a href="#admin-content" className="admin-skip-link">Saltar al contenido</a>
     <header className="admin-rail">
       <div className="admin-brand"><span><Coffee aria-hidden="true" /></span><div><strong>THE SIP</strong><small>Administración</small></div></div>
@@ -37,7 +37,7 @@ export default function AdminWorkspace() {
     <main id="admin-content" tabIndex={-1} className="admin-content">
       <header className="admin-welcome">
         <div><p className="admin-eyebrow">Administración · Centro</p><h1>Hola, Ana.</h1><p>Tu cafetería, en un solo lugar.</p></div>
-        <Link className="staff-secondary-button" to={paths.sale}><Store size={18} />Abrir punto de venta</Link>
+        <Link className="staff-secondary-button" to={paths.sale} state={{ fromAdmin: true }}><Store size={18} />Abrir punto de venta</Link>
       </header>
       <Suspense fallback={section.path === paths.admin ? <DashboardSkeleton /> : <ContentSkeleton label={`Cargando ${section.title}`} />}>
         <Outlet />
