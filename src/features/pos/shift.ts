@@ -1,4 +1,5 @@
 import type { Sale } from "./session";
+import { initialMenu, saleProducts } from "./catalog";
 
 const sampleCashier = "Ana López";
 export type Movement = { kind: "entry" | "withdrawal"; amount: number; reason: string; time: string; operator: string };
@@ -12,11 +13,15 @@ export function newShift(opening: number, opened: string, previousSales: number,
   return { opening, opened, previousSales, cashier, movements: [], close: null };
 }
 
+const sampleProducts = saleProducts(initialMenu);
+export function sampleLines(...ids: string[]) {
+  return ids.map(id => ({ product: sampleProducts.find(p => p.id === id)!, quantity: 1, takeaway: 0 }));
+}
 export const sampleSales: Sale[] = [
-  { ticket: "0058", time: "12:42", method: "Tarjeta", total: 14000, cash: 0, voucher: "00058", lines: [], memberNumber: null },
-  { ticket: "0057", time: "12:35", method: "Efectivo", total: 8700, cash: 8700, voucher: "", lines: [], memberNumber: null },
-  { ticket: "0056", time: "12:28", method: "Mixto", total: 11000, cash: 5000, voucher: "00056", lines: [], memberNumber: null },
-  { ticket: "0055", time: "12:16", method: "Efectivo", total: 6500, cash: 6500, voucher: "", lines: [], memberNumber: null },
+  { ticket: "0058", time: "12:42", method: "Tarjeta", total: 14000, cash: 0, voucher: "00058", lines: sampleLines("small-latte", "large-latte"), memberNumber: null },
+  { ticket: "0057", time: "12:35", method: "Efectivo", total: 8700, cash: 8700, voucher: "", lines: sampleLines("americano", "muffin"), memberNumber: null },
+  { ticket: "0056", time: "12:28", method: "Mixto", total: 11000, cash: 5000, voucher: "00056", lines: sampleLines("small-latte", "americano"), memberNumber: null },
+  { ticket: "0055", time: "12:16", method: "Efectivo", total: 6500, cash: 6500, voucher: "", lines: sampleLines("small-latte"), memberNumber: null },
 ];
 
 export const sampleShift: Shift = {

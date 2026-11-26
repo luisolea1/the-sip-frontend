@@ -37,7 +37,7 @@ export function ProductCatalog({ onAdd }: { onAdd: (product: Product) => void })
         {visible.map(product => <li key={product.id}>
           <button type="button" className="pos-product-button" onClick={() => onAdd(product)}
             aria-label={`Añadir ${product.name}, ${product.size}, ${formatMoney(product.price)}`}>
-            <span className="block rounded-xl bg-[#f2eee4]"><ProductIllustration kind={product.illustration} /></span>
+            <span className="block rounded-xl bg-[#f2eee4]"><ProductIllustration kind={product.illustration} photo={product.photo} /></span>
             <span className="mt-2 block font-bold">{product.name}</span>
             <span className="text-muted-foreground">{product.size}</span>
             <span className="mt-2 flex items-center justify-between gap-1 font-semibold">

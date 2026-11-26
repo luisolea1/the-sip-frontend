@@ -6,7 +6,7 @@ export function DashboardSkeleton() {
     <div aria-hidden="true" className="grid gap-4">
       <div className="flex min-h-11 items-center"><h2>Resumen de ventas</h2></div>
       <div className="admin-metric-grid">
-        {["Ventas del día", "Tickets", "Ticket promedio"].map(label => <div key={label} className="staff-workspace-panel">
+        {["Ventas del día", "Tickets", "Ticket promedio", "Unidades vendidas"].map(label => <div key={label} className="staff-workspace-panel">
           <p className="font-semibold">{label}</p>
           <div className="mt-2 h-9 w-24 rounded-lg bg-muted" />
         </div>)}

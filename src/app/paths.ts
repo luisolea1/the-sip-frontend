@@ -6,4 +6,8 @@ export const paths = {
   posMembers: "/caja/miembros",
   shift: "/caja/turno",
   admin: "/administrador",
+  menu: "/administrador/menu",
+  inventory: "/administrador/existencias",
+  alerts: "/administrador/avisos",
+  team: "/administrador/cajeros",
 } as const;

@@ -4,9 +4,9 @@ export type RecipeLine = { supplyId: string; quantity: number };
 export type Presentation = { id: string; size: string; price: number; packageId: string; recipe: RecipeLine[] };
 export type MenuItem = {
   id: string; name: string; category: Category; visible: boolean;
-  illustration: "latte" | "americano" | "chai" | "muffin"; variants: Presentation[];
+  illustration: "latte" | "americano" | "chai" | "muffin"; photo?: string; variants: Presentation[];
 };
-export type Product = Presentation & Pick<MenuItem, "name" | "category" | "illustration"> & { itemId: string };
+export type Product = Presentation & Pick<MenuItem, "name" | "category" | "illustration" | "photo"> & { itemId: string };
 export type TicketLine = { product: Product; quantity: number; takeaway: number };
 
 const coffee = { supplyId: "coffee", quantity: 18 };
@@ -28,6 +28,6 @@ export const initialMenu: MenuItem[] = [
 
 export function saleProducts(menu: MenuItem[]): Product[] {
   return menu.filter(item => item.visible).flatMap(item => item.variants.map(variant => ({
-    ...variant, itemId: item.id, name: item.name, category: item.category, illustration: item.illustration,
+    ...variant, itemId: item.id, name: item.name, category: item.category, illustration: item.illustration, photo: item.photo,
   })));
 }

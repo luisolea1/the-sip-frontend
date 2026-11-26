@@ -1,6 +1,7 @@
 import type { Product } from "../catalog";
 
-export function ProductIllustration({ kind }: { kind: Product["illustration"] }) {
+export function ProductIllustration({ kind, photo }: { kind: Product["illustration"]; photo?: string }) {
+  if (photo) return <img alt="" src={photo} className="h-24 w-full rounded-[inherit] object-cover" />;
   const dark = kind === "americano";
   return (
     <svg viewBox="0 0 160 100" aria-hidden="true" className="h-24 w-full">
