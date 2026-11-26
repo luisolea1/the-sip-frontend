@@ -1,4 +1,6 @@
-export type PosMember = { number: string; name: string; email: string; stamps: number };
+import type { Birthday } from "@/features/members/components/BirthdayFields";
+
+export type PosMember = { number: string; name: string; email: string; stamps: number; birthday?: Birthday };
 
 export const sampleMembers: PosMember[] = [
   { number: "01725", name: "María García", email: "maria@example.com", stamps: 8 },

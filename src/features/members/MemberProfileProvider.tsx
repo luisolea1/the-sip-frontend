@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-type MemberProfile = { name: string; email: string };
+import type { Birthday } from "./components/BirthdayFields";
+
+type MemberProfile = { name: string; email: string; birthday?: Birthday };
 type MemberProfileSession = {
   profile: MemberProfile | null;
   register: (profile: MemberProfile) => void;

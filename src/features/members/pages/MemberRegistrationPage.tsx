@@ -4,6 +4,7 @@ import { paths } from "@/app/paths";
 import { AreaIntroduction } from "@/shared/components/AreaIntroduction";
 import { Input } from "@/shared/components/ui/input";
 import { useMemberProfile } from "../MemberProfileProvider";
+import { BirthdayFields, readBirthday } from "../components/BirthdayFields";
 
 export default function MemberRegistrationPage() {
   const { profile, register } = useMemberProfile();
@@ -13,7 +14,7 @@ export default function MemberRegistrationPage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    register({ name: name.trim().replace(/\s+/g, " "), email: email.trim() });
+    register({ name: name.trim().replace(/\s+/g, " "), email: email.trim(), birthday: readBirthday(new FormData(event.currentTarget)) });
     navigate(paths.memberCard);
   }
 
@@ -31,6 +32,7 @@ export default function MemberRegistrationPage() {
           <Input id="member-email" type="email" autoComplete="email" placeholder="nombre@ejemplo.com" required
             value={email} onChange={event => setEmail(event.target.value)} />
         </div>
+        <BirthdayFields initial={profile?.birthday} />
         <div className="grid gap-3">
           <button type="submit" className="member-card-primary-button">Registrarse</button>
           <p id="registration-privacy" className="text-sm leading-relaxed text-muted-foreground">Los datos no se envían y se borran al recargar.</p>
